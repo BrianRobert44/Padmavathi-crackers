@@ -4,6 +4,7 @@ import { Box, Typography, Button, Container } from "@mui/material";
 import { motion } from "framer-motion";
 import { colors } from "../colors";
 import teaserVideo from "../assets/logo/0303.mp4";
+import DownloadPriceList from "../assets/Price-list-25.pdf";
 
 import "./BannerVideo.css";
 
@@ -114,7 +115,10 @@ function BannerVideo() {
         >
           <Button
             variant="contained"
-            onClick={handleScrollToProducts}
+            component="a"
+            href={DownloadPriceList}
+            target="_blank"
+            rel="noopener noreferrer"
             sx={{
               backgroundColor: colors.primaryRed,
               color: colors.white,

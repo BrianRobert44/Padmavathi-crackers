@@ -13,9 +13,9 @@ import { colors } from "../colors";
 // Import your banner image (adjust path as needed)
 // Make sure to add your banner image in the assets folder
 import bannerImage from "../assets/homePage/banner1.jpg"; // You'll need to add this image
+import DownloadPriceList from "../assets/Price-list-25.pdf";
 import BrandsLogo from "../components/BrandsLogo";
 import ShowProduct from "../components/ShowProduct";
-import BannerVideo from "../components/BannerVideo";
 import SpecialOffer from "../components/SpecialOffer";
 import CustomerReviews from "../components/CustomerReviews";
 import FirstPageContent from "../components/FirstPageContent";
@@ -99,6 +99,10 @@ export default function FirstPage() {
             <Button
               variant="outlined"
               size="large"
+              component="a"
+              href={DownloadPriceList}
+              target="_blank"
+              rel="noopener noreferrer"
               sx={{
                 color: colors.white,
                 borderColor: colors.white,
