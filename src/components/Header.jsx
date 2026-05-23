@@ -36,13 +36,14 @@ import productData from "./productData";
 import DownloadPriceList from "../assets/Price-list-25.pdf";
 import logo from "../assets/logo/logo.jpeg";
 
+// ✅ CHANGED: Added # before all href paths
 const navItems = [
-  { label: "HOME", href: "/home" },
-  { label: "ABOUT", href: "/about" },
-  { label: "QUICK ORDER", href: "/" },
-  { label: "NEW ARRIVALS", href: "/new-arrivals" },
-  { label: "CONTACT", href: "/contact" },
-  { label: "BLOGS", href: "/blogs" },
+  { label: "HOME", href: "#/home" },
+  { label: "ABOUT", href: "#/about" },
+  { label: "QUICK ORDER", href: "#/" },
+  { label: "NEW ARRIVALS", href: "#/new-arrivals" },
+  { label: "CONTACT", href: "#/contact" },
+  { label: "BLOGS", href: "#/blogs" },
 ];
 
 // Get unique categories from productData
@@ -90,7 +91,7 @@ export default function Header() {
     handleCategoryClose();
     setShowMobileCategories(false);
     if (category === "ALL CATEGORIES") {
-      navigate("/");
+      navigate("#/");
     } else {
       // Find the original category name from productData (case-insensitive)
       const originalCategory = productData.find(
@@ -99,7 +100,7 @@ export default function Header() {
 
       // Navigate with the original category name (not uppercase)
       navigate(
-        `/?category=${encodeURIComponent(originalCategory || category)}`,
+        `#/?category=${encodeURIComponent(originalCategory || category)}`,
       );
     }
   };
@@ -477,14 +478,14 @@ export default function Header() {
               px: { xs: 1.5, sm: 2, md: 3 },
             }}
           >
-            {/* Logo */}
+            {/* Logo - ✅ CHANGED: to="#/" */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Box component={NavLink} to="/" sx={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+              <Box component={NavLink} to="#/" sx={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
                 <img src={logo} alt="Sri Padmavathi Crackers Logo" style={{ height: "80px", width: "100px", objectFit: "contain", borderRadius: "4px" }} />
               </Box>
               <Typography
                 component={NavLink}
-                to="/"
+                to="#/"
                 sx={{
                   fontWeight: 900,
                   color: colors.primaryRed,

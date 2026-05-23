@@ -1,10 +1,11 @@
 // src/App.jsx
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,    // ← BrowserRouter ah HashRouter akku (Only change)
   Routes,
   Route,
   useLocation,
 } from "react-router-dom";
+
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Fooder";
@@ -22,39 +23,27 @@ import ScrollToTop from "./components/ScrollToTop";
 import FloatingButtons from "./components/FloatingButtons";
 import { colors } from "./colors";
 
-// Small component that decides whether to show Footer
 function ConditionalFooter() {
   const location = useLocation();
-
-  // Hide footer on the root path (QuickOrderPage) and admin path
   if (location.pathname === "/" || location.pathname === "/admin") {
     return null;
   }
-
   return <Footer />;
 }
 
-// Small component that decides whether to show FloatingButtons
 function ConditionalFloatingButtons() {
   const location = useLocation();
-
-  // Only hide on admin path
   if (location.pathname === "/admin") {
     return null;
   }
-
   return <FloatingButtons />;
 }
 
-// Small component that decides whether to show Header
 function ConditionalHeader() {
   const location = useLocation();
-
-  // Hide header on admin path
   if (location.pathname === "/admin") {
     return null;
   }
-
   return <Header />;
 }
 
@@ -62,7 +51,6 @@ function App() {
   return (
     <Router>
       <ConditionalHeader />
-
       <Routes>
         <Route path="/" element={<FirstPage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -75,9 +63,7 @@ function App() {
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
-
       <ConditionalFooter />
-      {/* Conditional floating buttons - hidden on QuickOrderPage */}
       <ConditionalFloatingButtons />
     </Router>
   );

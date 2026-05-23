@@ -81,21 +81,21 @@ export default function FirstPage() {
             CRACKERS SIVAKASI
           </Typography>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
-                bgcolor: colors.primaryRed,
-                px: 4,
-                py: 1.5,
-                fontWeight: 800,
-                fontSize: "1.1rem",
-                "&:hover": { bgcolor: colors.darkRed },
-              }}
-              href="/home"
-            >
-              ORDER ONLINE
-            </Button>
+          <Button
+  variant="contained"
+  size="large"
+  sx={{
+    bgcolor: colors.primaryRed,
+    px: 4,
+    py: 1.5,
+    fontWeight: 800,
+    fontSize: "1.1rem",
+    "&:hover": { bgcolor: colors.darkRed },
+  }}
+  href="#/home"       // ← Add # mundhi (Ithu mathi podu)
+>
+  ORDER ONLINE
+</Button>
             <Button
               variant="outlined"
               size="large"
