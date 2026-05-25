@@ -36,17 +36,17 @@ import productData from "./productData";
 import DownloadPriceList from "../assets/Price-list-25.pdf";
 import logo from "../assets/logo/logo.jpeg";
 
-// ✅ CHANGED: Added # before all href paths
+
 const navItems = [
-  { label: "HOME", href: "#/home" },
-  { label: "ABOUT", href: "#/about" },
-  { label: "QUICK ORDER", href: "#/" },
-  { label: "NEW ARRIVALS", href: "#/new-arrivals" },
-  { label: "CONTACT", href: "#/contact" },
-  { label: "BLOGS", href: "#/blogs" },
+  { label: "HOME", href: "/home" },
+  { label: "ABOUT", href: "/about" },
+  { label: "QUICK ORDER", href: "/" },
+  { label: "NEW ARRIVALS", href: "/new-arrivals" },
+  { label: "CONTACT", href: "/contact" },
+  { label: "BLOGS", href: "/blogs" },
 ];
 
-// Get unique categories from productData
+
 const categories = [
   "ALL CATEGORIES",
   ...productData.map((item) => item.category.toUpperCase()),
@@ -91,7 +91,7 @@ export default function Header() {
     handleCategoryClose();
     setShowMobileCategories(false);
     if (category === "ALL CATEGORIES") {
-      navigate("#/");
+      navigate("/");
     } else {
       // Find the original category name from productData (case-insensitive)
       const originalCategory = productData.find(
@@ -100,7 +100,7 @@ export default function Header() {
 
       // Navigate with the original category name (not uppercase)
       navigate(
-        `#/?category=${encodeURIComponent(originalCategory || category)}`,
+        `/?category=${encodeURIComponent(originalCategory || category)}`,
       );
     }
   };
@@ -478,14 +478,14 @@ export default function Header() {
               px: { xs: 1.5, sm: 2, md: 3 },
             }}
           >
-            {/* Logo - ✅ CHANGED: to="#/" */}
+            {/* Logo - ✅ CHANGED: to="/" */}
             <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1 }, overflow: "hidden" }}>
-              <Box component={NavLink} to="#/" sx={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+              <Box component={NavLink} to="/" sx={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
                 <Box component="img" src={logo} alt="Sri Padmavathi Crackers Logo" sx={{ height: { xs: "45px", sm: "80px" }, width: { xs: "55px", sm: "100px" }, objectFit: "contain", borderRadius: "4px" }} />
               </Box>
               <Typography
                 component={NavLink}
-                to="#/"
+                to="/"
                 sx={{
                   fontWeight: 900,
                   color: colors.primaryRed,

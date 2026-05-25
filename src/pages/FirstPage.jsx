@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import { colors } from "../colors";
 
 // Import your banner image (adjust path as needed)
@@ -82,20 +83,21 @@ export default function FirstPage() {
           </Typography>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
           <Button
-  variant="contained"
-  size="large"
-  sx={{
-    bgcolor: colors.primaryRed,
-    px: 4,
-    py: 1.5,
-    fontWeight: 800,
-    fontSize: "1.1rem",
-    "&:hover": { bgcolor: colors.darkRed },
-  }}
-  href="#/home"       // ← Add # mundhi (Ithu mathi podu)
->
-  ORDER ONLINE
-</Button>
+            variant="contained"
+            size="large"
+            component={Link}
+            to="/home"
+            sx={{
+              bgcolor: colors.primaryRed,
+              px: 4,
+              py: 1.5,
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              "&:hover": { bgcolor: colors.darkRed },
+            }}
+          >
+            ORDER ONLINE
+          </Button>
             <Button
               variant="outlined"
               size="large"

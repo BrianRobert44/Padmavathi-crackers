@@ -1,6 +1,5 @@
-// src/App.jsx
 import {
-  HashRouter as Router,    // ← BrowserRouter ah HashRouter akku (Only change)
+  BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
@@ -49,6 +48,7 @@ function ConditionalHeader() {
 
 function App() {
   return (
+
     <Router>
       <ConditionalHeader />
       <Routes>
@@ -66,6 +66,7 @@ function App() {
       <ConditionalFooter />
       <ConditionalFloatingButtons />
     </Router>
+    
   );
 }
 
