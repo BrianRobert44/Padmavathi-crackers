@@ -479,9 +479,9 @@ export default function Header() {
             }}
           >
             {/* Logo - ✅ CHANGED: to="#/" */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Box component={NavLink} to="#/" sx={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-                <img src={logo} alt="Sri Padmavathi Crackers Logo" style={{ height: "80px", width: "100px", objectFit: "contain", borderRadius: "4px" }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1 }, overflow: "hidden" }}>
+              <Box component={NavLink} to="#/" sx={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+                <Box component="img" src={logo} alt="Sri Padmavathi Crackers Logo" sx={{ height: { xs: "45px", sm: "80px" }, width: { xs: "55px", sm: "100px" }, objectFit: "contain", borderRadius: "4px" }} />
               </Box>
               <Typography
                 component={NavLink}
@@ -492,8 +492,12 @@ export default function Header() {
                   textDecoration: "none",
                   letterSpacing: "-0.3px",
                   fontFamily: '"Poppins", sans-serif',
-                  fontSize: { xs: "1.1rem", sm: "1.3rem", md: "1.5rem" },
+                  fontSize: { xs: "0.85rem", sm: "1.3rem", md: "1.5rem" },
                   lineHeight: 1.1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  whiteSpace: "nowrap"
                 }}
               >
                 Sri Padmavathi
@@ -501,9 +505,8 @@ export default function Header() {
                   component="span"
                   sx={{
                     color: colors.darkRed,
-                    display: { xs: "inline", sm: "block" },
-                    fontSize: { xs: "0.65rem", sm: "0.8rem", md: "0.9rem" },
-                    ml: { xs: 0.3, sm: 0 },
+                    display: "block",
+                    fontSize: { xs: "0.6rem", sm: "0.8rem", md: "0.9rem" },
                     fontWeight: 700,
                   }}
                 >
@@ -518,6 +521,7 @@ export default function Header() {
                 display: "flex",
                 alignItems: "center",
                 gap: { xs: 0.5, sm: 1, md: 2 },
+                flexShrink: 0,
               }}
             >
               {/* Cart */}
@@ -527,8 +531,8 @@ export default function Header() {
                   alignItems: "center",
                   gap: 0.3,
                   bgcolor: colors.lightBlueGray,
-                  py: { xs: 0.5, sm: 0.8 },
-                  px: { xs: 1, sm: 1.5 },
+                  py: { xs: 0.4, sm: 0.8 },
+                  px: { xs: 0.8, sm: 1.5 },
                   borderRadius: 4,
                 }}
               >
@@ -536,7 +540,7 @@ export default function Header() {
                   variant="body2"
                   sx={{
                     fontWeight: 700,
-                    fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
+                    fontSize: { xs: "0.75rem", sm: "0.9rem", md: "1rem" },
                     color: colors.darkGray,
                   }}
                 >
@@ -545,7 +549,7 @@ export default function Header() {
                 <ShoppingCartIcon
                   sx={{
                     color: colors.primaryRed,
-                    fontSize: { xs: "1.2rem", sm: "1.3rem", md: "1.5rem" },
+                    fontSize: { xs: "1.1rem", sm: "1.3rem", md: "1.5rem" },
                   }}
                 />
               </Box>
@@ -561,12 +565,12 @@ export default function Header() {
                     bgcolor: colors.primaryRed,
                     color: colors.white,
                     "&:hover": { bgcolor: colors.darkRed },
-                    p: { xs: 1, sm: 1.2 },
-                    ml: 0.5,
+                    p: { xs: 0.8, sm: 1.2 },
+                    ml: { xs: 0.2, sm: 0.5 },
                     display: { xs: "flex", md: "none" },
                   }}
                 >
-                  <MenuIcon sx={{ fontSize: { xs: "1.3rem", sm: "1.5rem" } }} />
+                  <MenuIcon sx={{ fontSize: { xs: "1.2rem", sm: "1.5rem" } }} />
                 </IconButton>
               )}
             </Box>
