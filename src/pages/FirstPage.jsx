@@ -21,6 +21,9 @@ import CustomerReviews from "../components/CustomerReviews";
 import FirstPageContent from "../components/FirstPageContent";
 import FAQComponent from "../components/FAQComponent";
 import AboutVisionSection from "../components/AboutVisionSection";
+import SeoContent from "../components/SeoContent";
+import SocialShare from "../components/SocialShare";
+import { Helmet } from "react-helmet-async";
 
 export default function FirstPage() {
   const theme = useTheme();
@@ -29,6 +32,32 @@ export default function FirstPage() {
 
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
+      <Helmet>
+        <title>Sri Padmavathi Crackers - Premium Quality Crackers in Sivakasi</title>
+        <meta name="description" content="Buy premium quality crackers online from Sri Padmavathi Crackers, Sivakasi. Get the best prices, safe delivery, and exciting festival offers on all fireworks." />
+        <link rel="canonical" href="https://www.sripadmavathicrackers.com/" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "FireStation",
+              "name": "Sri Padmavathi Crackers",
+              "image": "https://www.sripadmavathicrackers.com/assets/logo.png",
+              "@id": "",
+              "url": "https://www.sripadmavathicrackers.com/",
+              "telephone": "",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Sivakasi",
+                "addressLocality": "Sivakasi",
+                "addressRegion": "TN",
+                "postalCode": "626123",
+                "addressCountry": "IN"
+              }
+            }
+          `}
+        </script>
+      </Helmet>
       {/* Full Width Banner */}
 
       {/* Hero Banner Section */}
@@ -59,6 +88,7 @@ export default function FirstPage() {
         <Container sx={{ position: "relative", zIndex: 2, textAlign: "center" }}>
           <Typography
             variant={isMobile ? "h3" : "h1"}
+            component="h2"
             sx={{
               fontWeight: 900,
               textTransform: "uppercase",
@@ -71,6 +101,7 @@ export default function FirstPage() {
           </Typography>
           <Typography
             variant={isMobile ? "h5" : "h3"}
+            component="h1"
             sx={{
               fontWeight: 700,
               textTransform: "uppercase",
@@ -78,7 +109,7 @@ export default function FirstPage() {
               color: colors.warningYellow,
             }}
           >
-            CRACKERS SIVAKASI
+            Premium Quality Crackers in Sivakasi
           </Typography>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
             <Button
@@ -120,11 +151,13 @@ export default function FirstPage() {
       </Box>
       {/* Optional: Add some content below the banner */}
       <FirstPageContent />
+      <SeoContent />
       <AboutVisionSection />
       <ShowProduct />
       <BrandsLogo />
       <SpecialOffer />
       <CustomerReviews />
+      <SocialShare />
       <FAQComponent />
     </Box>
   );
