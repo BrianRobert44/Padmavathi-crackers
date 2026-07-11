@@ -120,6 +120,7 @@ const SafetyTips = () => {
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography
               variant="h3"
+              component="h2"
               sx={{
                 fontWeight: 800,
                 color: colors.warningYellow,

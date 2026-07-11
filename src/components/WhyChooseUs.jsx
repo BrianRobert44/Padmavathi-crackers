@@ -237,6 +237,7 @@ const WhyChooseUs = () => {
               {/* Title */}
               <Typography
                 variant="h5"
+                component="h3"
                 sx={{
                   fontWeight: 700,
                   mb: 1.5,

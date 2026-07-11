@@ -314,6 +314,7 @@ const AboutText = () => {
           <Box sx={{ position: "relative", zIndex: 1 }}>
             <Typography
               variant={isMobile ? "h4" : isTablet ? "h3" : "h2"}
+              component="h2"
               sx={{
                 fontWeight: 800,
                 mb: { xs: 1, sm: 2 },
@@ -426,6 +427,7 @@ const AboutText = () => {
               {/* Title */}
               <Typography
                 variant={isMobile ? "h5" : "h4"}
+                component="h3"
                 sx={{
                   color: colors.primaryRed,
                   fontWeight: 700,
@@ -663,6 +665,7 @@ const AboutText = () => {
               <Typography
                 className="stat-number"
                 variant="h4"
+                component="span"
                 sx={{
                   fontWeight: 800,
                   color: colors.darkGray,

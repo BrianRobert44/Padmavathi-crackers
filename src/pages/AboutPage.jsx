@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Helmet } from "react-helmet-async";
 import { colors } from "../colors";
 
 // Component imports
@@ -26,6 +27,13 @@ export default function AboutPage() {
 
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
+      <Helmet>
+        <title>About Sri Padmavathi Crackers | Sivakasi Crackers Shop</title>
+        <meta
+          name="description"
+          content="Learn about Sri Padmavathi Crackers, a trusted Sivakasi crackers shop offering quality fireworks, affordable pricing, and online cracker delivery across India."
+        />
+      </Helmet>
       {/* Hero Banner Section */}
       <Box
         sx={{
