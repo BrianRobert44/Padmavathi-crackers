@@ -3,6 +3,8 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import PinterestIcon from "@mui/icons-material/Pinterest";
 import { colors } from "../colors";
 
 const SocialShare = () => {
@@ -19,6 +21,14 @@ const SocialShare = () => {
   const handleInstagram = () => {
     // Instagram doesn't have a direct share link, so just link to their profile or a general intent
     window.open(`https://www.instagram.com/`, "_blank");
+  };
+
+  const handleTwitterShare = () => {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Sri Padmavathi Crackers:")}&url=${encodeURIComponent(shareUrl)}`, "_blank");
+  };
+
+  const handlePinterestShare = () => {
+    window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent("Premium Quality Crackers in Sivakasi - Sri Padmavathi Crackers")}`, "_blank");
   };
 
   return (
@@ -60,6 +70,32 @@ const SocialShare = () => {
           }}
         >
           <InstagramIcon fontSize="large" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Share on Twitter (X)">
+        <IconButton 
+          onClick={handleTwitterShare}
+          sx={{ 
+            bgcolor: "#000000", 
+            color: "white", 
+            "&:hover": { bgcolor: "#333333" },
+            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)" 
+          }}
+        >
+          <TwitterIcon fontSize="large" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Share on Pinterest">
+        <IconButton 
+          onClick={handlePinterestShare}
+          sx={{ 
+            bgcolor: "#E60023", 
+            color: "white", 
+            "&:hover": { bgcolor: "#cc001f" },
+            boxShadow: "0 4px 10px rgba(230, 0, 35, 0.3)" 
+          }}
+        >
+          <PinterestIcon fontSize="large" />
         </IconButton>
       </Tooltip>
     </Box>

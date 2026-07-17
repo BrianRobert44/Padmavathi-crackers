@@ -27,38 +27,69 @@ const SeoContent = () => {
               textAlign: "center",
             }}
           >
-            Celebrate Every Festival with Sri Padmavathi Crackers
+            Premium Sivakasi Crackers – Safe & Quality Fireworks
           </Typography>
           
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            Festivals are all about happiness, togetherness, and unforgettable celebrations. At Sri Padmavathi Crackers, we bring you a wide collection of premium-quality crackers that add excitement, color, and joy to every special occasion. From family celebrations to grand festive events, we ensure every moment becomes brighter and more memorable.
+            <strong>Premium Crackers Online</strong>
+            <br />
+            Welcome to Sri Padmavathi Crackers, your trusted destination for premium Sivakasi crackers at affordable prices. We offer a wide range of high-quality fireworks, including sparklers, flower pots, rockets, chakras, fancy crackers, sound crackers, kids&#39; crackers, and gift boxes. Our products are sourced directly from trusted Sivakasi manufacturers to ensure safety, quality, and reliable performance.
           </Typography>
 
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            Explore our extensive range of exciting bombs, colorful aerial fireworks, sparkling lightings, and other festive favourites that are carefully selected to deliver quality, safety, and entertainment. Every product is sourced to provide a spectacular celebration experience while maintaining high safety standards.
-          </Typography>
-
-          <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            Enhance your festive decorations with elegant candles, beautiful lamps, and stylish light fixtures that create a warm and welcoming atmosphere for your home, office, or celebration venue. Whether you&#39;re decorating for Diwali or any special event, our lighting collection adds the perfect festive touch.
+            Whether you&#39;re celebrating Diwali, weddings, temple festivals, birthdays, or special events, we provide premium crackers with attractive discounts, secure packaging, and timely doorstep delivery across India.
           </Typography>
 
           <Typography variant="h3" component="h3" sx={{ fontWeight: 700, fontSize: { xs: "1.4rem", md: "1.8rem" }, color: colors.darkGray, mt: 4, mb: 2 }}>
-            Quality, Safety, and Trust
+            Our Services
           </Typography>
 
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            At Sri Padmavathi Crackers, customer satisfaction is our priority. We offer quality products, competitive prices, and reliable service to make your shopping experience simple and enjoyable. Our commitment to quality and safety has made us a trusted choice for customers looking to celebrate with confidence.
+            <strong>Online Crackers Shopping</strong>
+            <br />
+            Buy your favorite Sivakasi crackers online with ease. Our website offers a simple shopping experience, secure payments, and fast delivery.
+          </Typography>
+
+          <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
+            <strong>Wholesale Crackers</strong>
+            <br />
+            We supply wholesale crackers for retailers, businesses, schools, and event organizers at competitive prices with assured quality.
+          </Typography>
+          
+          <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
+            <strong>Festival Combo Packs</strong>
+            <br />
+            Choose from our exclusive Diwali cracker combo packs and family gift boxes, specially designed for every celebration.
+          </Typography>
+          
+          <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
+            <strong>Safe Packaging & Delivery</strong>
+            <br />
+            All orders are securely packed to prevent damage during transit and delivered safely to your doorstep.
+          </Typography>
+
+          <Typography variant="h3" component="h3" sx={{ fontWeight: 700, fontSize: { xs: "1.4rem", md: "1.8rem" }, color: colors.darkGray, mt: 4, mb: 2 }}>
+            Why Choose Sri Padmavathi Crackers?
+          </Typography>
+          
+          <Box component="ul" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem", pl: 3 }}>
+            <li>Premium Quality Sivakasi Crackers</li>
+            <li>Direct Factory Pricing</li>
+            <li>Attractive Festival Discounts</li>
+            <li>Safe & Secure Packaging</li>
+            <li>Wide Variety of Fireworks</li>
+            <li>Fast Doorstep Delivery</li>
+            <li>Trusted Customer Support</li>
+            <li>Bulk Order Facility</li>
+          </Box>
+
+          <Typography variant="h3" component="h3" sx={{ fontWeight: 700, fontSize: { xs: "1.4rem", md: "1.8rem" }, color: colors.darkGray, mt: 4, mb: 2 }}>
+            Order Premium Sivakasi Crackers Today
           </Typography>
 
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 3, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            Whether you&#39;re planning a small family gathering or a grand festival celebration, Sri Padmavathi Crackers has everything you need to make the occasion truly unforgettable.
+            Looking for the best online crackers shop in Sivakasi? Sri Padmavathi Crackers offers premium fireworks, wholesale crackers, festival combo packs, and safe doorstep delivery at affordable prices. Celebrate every occasion with genuine Sivakasi crackers and enjoy a colorful, memorable festival experience.
           </Typography>
-
-          <Box sx={{ textAlign: "center", mt: 4, p: 3, backgroundColor: `${colors.primaryRed}10`, borderRadius: "10px" }}>
-            <Typography variant="h4" component="p" sx={{ fontWeight: 700, fontSize: { xs: "1.2rem", md: "1.5rem" }, color: colors.darkRed }}>
-              Light Up Every Celebration with Quality, Safety &amp; Joy – Choose Sri Padmavathi Crackers!
-            </Typography>
-          </Box>
 
         </Paper>
       </Container>

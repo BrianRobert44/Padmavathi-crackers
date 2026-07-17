@@ -54,7 +54,7 @@ const reviews = [
     location: "Hyderabad",
     stars: 5,
     detailedDesc:
-      "Compared prices across 5 different websites - Jallikattu had the best rates by far. The 5' Orange crackers were massive and created the loudest sound. Free complimentary items were a nice surprise!",
+      "Compared prices across 5 different websites - Sri Padmavathi Crackers had the best rates by far. The 5' Orange crackers were massive and created the loudest sound. Free complimentary items were a nice surprise!",
     purchaseDate: "Nov 2024",
     product: "Premium Crackers Set",
     verified: true,
@@ -114,7 +114,7 @@ const reviews = [
     location: "Tirupati",
     stars: 5,
     detailedDesc:
-      "Was skeptical about online cracker purchase, but Jallikattu proved me wrong. Transparent pricing, no hidden costs, and exactly what I ordered. Even replaced a slightly damaged box immediately.",
+      "Was skeptical about online cracker purchase, but Sri Padmavathi Crackers proved me wrong. Transparent pricing, no hidden costs, and exactly what I ordered. Even replaced a slightly damaged box immediately.",
     purchaseDate: "Oct 2024",
     product: "Premium Assortment",
     verified: true,
@@ -285,8 +285,8 @@ export default function CustomerReviews() {
 
   const itemWidth = getItemWidth();
 
-  // Duplicate reviews for seamless infinite scroll
-  const duplicatedReviews = [...reviews, ...reviews, ...reviews];
+  // Use single array of reviews to avoid SEO duplicate content penalties
+  const displayReviews = reviews;
 
   const scrollToIndex = (index) => {
     if (scrollRef.current) {
@@ -534,8 +534,8 @@ export default function CustomerReviews() {
               WebkitOverflowScrolling: "touch", // Smooth scrolling on iOS
             }}
           >
-            {duplicatedReviews.map((review, index) => {
-              const isCurrent = index % reviews.length === currentIndex;
+            {displayReviews.map((review, index) => {
+              const isCurrent = index === currentIndex;
 
               return (
                 <Fade in={true} timeout={500} key={`${index}-${animationKey}`}>

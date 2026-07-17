@@ -87,29 +87,37 @@ export default function FirstPage() {
       >
         <Container sx={{ position: "relative", zIndex: 2, textAlign: "center" }}>
           <Typography
-            variant={isMobile ? "h3" : "h1"}
-            component="h2"
-            sx={{
-              fontWeight: 900,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              mb: 1,
-              textShadow: "2px 2px 10px rgba(0,0,0,0.5)",
-            }}
-          >
-            Sri Padmavathi Crackers
-          </Typography>
-          <Typography
-            variant={isMobile ? "h5" : "h3"}
             component="h1"
             sx={{
-              fontWeight: 700,
-              textTransform: "uppercase",
-              mb: 4,
-              color: colors.warningYellow,
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
             }}
           >
-            Premium Quality Crackers in Sivakasi
+            <Typography
+              variant={isMobile ? "h3" : "h1"}
+              component="span"
+              sx={{
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                textShadow: "2px 2px 10px rgba(0,0,0,0.5)",
+              }}
+            >
+              Sri Padmavathi Crackers
+            </Typography>
+            <Typography
+              variant={isMobile ? "h5" : "h3"}
+              component="span"
+              sx={{
+                fontWeight: 700,
+                textTransform: "uppercase",
+                mb: 4,
+                color: colors.warningYellow,
+              }}
+            >
+              Premium Quality Crackers in Sivakasi
+            </Typography>
           </Typography>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
             <Button
