@@ -284,7 +284,7 @@ export default function Header() {
         sx={{ p: 2, pt: 0, display: "flex", justifyContent: "center", gap: 2 }}
       >
         <IconButton
-          href="https://instagram.com"
+          href="https://instagram.com/padmavathicrackers"
           sx={{ color: "#E1306C", bgcolor: colors.lightBlueGray, p: 1.5 }}
         >
           <InstagramIcon />

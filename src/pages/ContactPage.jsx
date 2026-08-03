@@ -23,8 +23,12 @@ import SendIcon from "@mui/icons-material/Send";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GavelIcon from "@mui/icons-material/Gavel";
 import InfoIcon from "@mui/icons-material/Info";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import bannerImage from "../assets/banner/contact.jpg";
 import { colors } from "../colors";
+import { Helmet } from "react-helmet-async";
 
 // Animation variants (keeping your original ones)
 const fadeInUp = {
@@ -151,8 +155,92 @@ ${formData.message}
   const mapUrl =
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.123456789!2d77.8!3d9.45!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0f0b123456789%3A0x123456789abcdef!2sSivakasi%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1234567890";
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.sripadmavathicrackers.com/#organization",
+        "name": "Sri Padmavathi Crackers",
+        "url": "https://www.sripadmavathicrackers.com",
+        "logo": "https://www.sripadmavathicrackers.com/logo.jpeg",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91 99525 61300",
+          "contactType": "customer service"
+        }
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://www.sripadmavathicrackers.com/#localbusiness",
+        "name": "Sri Padmavathi Crackers",
+        "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
+        "telephone": "+91 96551 21440",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "14/496/8, Anuppankulam",
+          "addressLocality": "Sivakasi",
+          "addressRegion": "Tamil Nadu",
+          "postalCode": "626189",
+          "addressCountry": "IN"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.sripadmavathicrackers.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Contact Us",
+            "item": "https://www.sripadmavathicrackers.com/contact"
+          }
+        ]
+      },
+      {
+        "@type": "ContactPage",
+        "@id": "https://www.sripadmavathicrackers.com/contact/#webpage",
+        "url": "https://www.sripadmavathicrackers.com/contact",
+        "name": "Contact Sri Padmavathi Crackers Sivakasi for Premium Fireworks"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How to order Sivakasi crackers online?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Select your products in the Estimate Page to see your estimation and submit the required crackers through the Get Estimate Button. We will contact you within 2 hrs and confirm the order."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is Sri Padmavathi Crackers located?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We are located at 14/496/8, Anuppankulam, Sivakasi – 626189, Tamil Nadu, India."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <>
+      <Helmet htmlAttributes={{ lang: 'en' }}>
+        <title>Contact Sri Padmavathi Crackers Sivakasi for Premium Fireworks</title>
+        <meta name="description" content="Contact Sri Padmavathi Crackers Sivakasi for premium quality crackers, wholesale fireworks, festive offers, online booking, and doorstep delivery across India." />
+        <script type="application/ld+json">
+          {JSON.stringify(schemaData)}
+        </script>
+      </Helmet>
       {/* Hero Banner Section */}
       <Box
         sx={{
@@ -183,7 +271,7 @@ ${formData.message}
         {/* Content on top */}
         <Box sx={{ position: "relative", zIndex: 2, px: 3 }}>
           <Typography
-            variant={isMobile ? "h3" : "h2"}
+            variant={isMobile ? "h4" : "h3"}
             component="h1"
             sx={{
               fontWeight: "bold",
@@ -191,7 +279,7 @@ ${formData.message}
               letterSpacing: "-0.5px",
             }}
           >
-            Contact Us
+            Contact Sri Padmavathi Crackers Sivakasi for Premium Fireworks
           </Typography>
 
           <Breadcrumbs
@@ -291,7 +379,7 @@ ${formData.message}
                   },
                 }}
               >
-                Contact Us
+                Reach Out to Us
               </Typography>
               <Typography
                 variant="h6"
@@ -352,6 +440,7 @@ ${formData.message}
                   >
                     <Typography
                       variant="h5"
+                      component="h3"
                       sx={{ fontWeight: 700, color: colors.darkGray, mb: 3 }}
                     >
                       Get in Touch
@@ -649,6 +738,50 @@ ${formData.message}
                       </Typography>
                     </Box>
                   </motion.div>
+
+                  {/* Social Sharing */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                  >
+                    <Box sx={{ mt: 3, textAlign: "center" }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 600, color: colors.darkGray, mb: 2 }}>
+                        Connect With Us
+                      </Typography>
+                      <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                        {[
+                          { icon: <FacebookIcon />, color: "#1877F2", link: "https://facebook.com" },
+                          { icon: <InstagramIcon />, color: "#E4405F", link: "https://instagram.com/padmavathicrackers" },
+                          { icon: <WhatsAppIcon />, color: "#25D366", link: "https://wa.me/919655121440" }
+                        ].map((social, idx) => (
+                          <Box
+                            key={idx}
+                            component="a"
+                            href={social.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: "50%",
+                              bgcolor: social.color,
+                              color: colors.white,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              transition: "transform 0.3s ease",
+                              "&:hover": {
+                                transform: "translateY(-5px)",
+                              }
+                            }}
+                          >
+                            {social.icon}
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </motion.div>
                 </Paper>
               </motion.div>
 
@@ -670,6 +803,7 @@ ${formData.message}
                 >
                   <Typography
                     variant="h5"
+                    component="h3"
                     sx={{ fontWeight: 700, color: colors.darkGray, mb: 3 }}
                   >
                     Send Us a Message
@@ -893,6 +1027,32 @@ ${formData.message}
                   </Box>
                 </Box>
               </Paper>
+            </Box>
+          </motion.div>
+
+          {/* SEO Content Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            <Box sx={{ mt: { xs: 5, md: 8 }, px: { xs: 2, md: 4 }, py: 4, bgcolor: colors.white, borderRadius: 4, boxShadow: `0 4px 20px ${colors.black}10` }}>
+              <Typography variant="h4" component="h2" sx={{ fontWeight: 700, color: colors.primaryRed, mb: 3 }}>
+                Contact Sri Padmavathi Crackers – Sivakasi
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                Looking for the best place to buy Sivakasi crackers? Get in touch with <strong style={{ color: colors.primaryRed }}>Sri Padmavathi Crackers</strong>, your trusted destination for premium-quality fireworks and festive cracker collections. We offer a wide range of Diwali crackers, gift boxes, fancy fireworks, sparklers, flower pots, rockets, ground chakkars, and family packs at competitive wholesale and retail prices. Our team is committed to providing safe, high-quality products and excellent customer service to make every celebration memorable.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                Whether you are planning for Diwali celebrations, weddings, temple festivals, school events, or corporate functions, <strong style={{ color: colors.primaryRed }}>Sri Padmavathi Crackers</strong> provides the right fireworks for every occasion. Our experienced team is always ready to help you choose the best crackers based on your budget and celebration needs. We ensure quality products, genuine pricing, and timely customer support throughout your purchase journey.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                Customers from across India can contact us for online crackers booking, wholesale enquiries, bulk orders, dealer partnerships, and festival offers. We focus on delivering quality fireworks with reliable service, secure ordering, and customer satisfaction. Our goal is to make purchasing Sivakasi fireworks online simple, safe, and convenient for every customer.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, lineHeight: 1.8 }}>
+                Visit <strong style={{ color: colors.primaryRed }}>Sri Padmavathi Crackers</strong> to explore the latest cracker collections and exclusive festive offers. Contact us today for product enquiries, order assistance, and wholesale pricing. Celebrate every festival with premium Sivakasi crackers, trusted quality, and outstanding service from one of the leading fireworks stores in Sivakasi.
+              </Typography>
             </Box>
           </motion.div>
         </Container>

@@ -25,7 +25,11 @@ import NewReleasesIcon from "@mui/icons-material/NewReleases";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SecurityIcon from "@mui/icons-material/Security";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { colors } from "../colors";
+import { Helmet } from "react-helmet-async";
 
 // Placeholder images - Replace with your actual new arrival product images
 import newArrival1 from "../assets/images/giftbox.jpg";
@@ -132,8 +136,72 @@ const NewArrivalsPage = () => {
     transition: { duration: 0.8 },
   };
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.sripadmavathicrackers.com/#organization",
+        "name": "Sri Padmavathi Crackers",
+        "url": "https://www.sripadmavathicrackers.com",
+        "logo": "https://www.sripadmavathicrackers.com/logo.jpeg"
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://www.sripadmavathicrackers.com/#localbusiness",
+        "name": "Sri Padmavathi Crackers",
+        "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "14/496/8, Anuppankulam",
+          "addressLocality": "Sivakasi",
+          "addressRegion": "Tamil Nadu",
+          "postalCode": "626189",
+          "addressCountry": "IN"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.sripadmavathicrackers.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "New Arrival",
+            "item": "https://www.sripadmavathicrackers.com/new-arrivals"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What are the new arrivals in Sivakasi crackers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Our new arrivals feature a wide collection of festival crackers, Diwali crackers, gift boxes, flower pots, rockets, sparklers, ground chakkars, bombs, fancy fireworks, and kids crackers at affordable prices."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <>
+      <Helmet htmlAttributes={{ lang: 'en' }}>
+        <title>Buy Premium Sivakasi Crackers Online at Sri Padmavathi Crackers</title>
+        <meta name="description" content="Discover the latest Sivakasi crackers at Sri Padmavathi Crackers. Enjoy online cracker shopping with exciting offers, secure ordering, and fast delivery." />
+        <script type="application/ld+json">
+          {JSON.stringify(schemaData)}
+        </script>
+      </Helmet>
       {/* Hero Banner Section */}
       <Box
         sx={{
@@ -164,7 +232,7 @@ const NewArrivalsPage = () => {
         {/* Content on top */}
         <Box sx={{ position: "relative", zIndex: 2, px: 3 }}>
           <Typography
-            variant={isMobile ? "h3" : "h2"}
+            variant={isMobile ? "h4" : "h3"}
             component="h1"
             sx={{
               fontWeight: "bold",
@@ -172,7 +240,7 @@ const NewArrivalsPage = () => {
               letterSpacing: "-0.5px",
             }}
           >
-            New Arrival
+            Buy Premium Sivakasi Crackers Online at Sri Padmavathi Crackers
           </Typography>
 
           <Breadcrumbs
@@ -238,7 +306,7 @@ const NewArrivalsPage = () => {
                 </Box>
 
                 <Typography
-                  variant="h1"
+                  variant="h2"
                   sx={{
                     fontWeight: 800,
                     fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4rem" },
@@ -585,6 +653,7 @@ const NewArrivalsPage = () => {
                         <Button
                           variant="contained"
                           size="small"
+                          aria-label={`Quick view ${product.name}`}
                           onClick={() => handleQuickView(product.category)}
                           sx={{
                             bgcolor: colors.white,
@@ -665,6 +734,7 @@ const NewArrivalsPage = () => {
                       {/* Product Name */}
                       <Typography
                         variant="h6"
+                        component="h3"
                         sx={{
                           fontWeight: 700,
                           color: colors.darkGray,
@@ -722,6 +792,7 @@ const NewArrivalsPage = () => {
                       <Button
                         fullWidth
                         variant="contained"
+                        aria-label={`Order ${product.name}`}
                         onClick={() => handleOrderNow(product.category)}
                         sx={{
                           bgcolor: colors.primaryRed,
@@ -760,6 +831,7 @@ const NewArrivalsPage = () => {
             >
               <Typography
                 variant="h3"
+                component="h2"
                 sx={{
                   fontWeight: 800,
                   fontSize: { xs: "1.8rem", md: "2.2rem" },
@@ -803,6 +875,67 @@ const NewArrivalsPage = () => {
               >
                 Shop Now
               </Button>
+            </Box>
+          </motion.div>
+
+          {/* Social Sharing */}
+          <motion.div {...fadeInUp}>
+            <Box sx={{ mt: 6, textAlign: "center" }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: colors.darkGray, mb: 2 }}>
+                Share Our New Collection
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                {[
+                  { icon: <FacebookIcon />, color: "#1877F2", link: "https://facebook.com" },
+                  { icon: <InstagramIcon />, color: "#E4405F", link: "https://instagram.com/padmavathicrackers" },
+                  { icon: <WhatsAppIcon />, color: "#25D366", link: "https://wa.me/919655121440" }
+                ].map((social, idx) => (
+                  <Box
+                    key={idx}
+                    component="a"
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      bgcolor: social.color,
+                      color: colors.white,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "transform 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                      }
+                    }}
+                  >
+                    {social.icon}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </motion.div>
+
+          {/* SEO Content Section */}
+          <motion.div {...fadeInUp}>
+            <Box sx={{ mt: 8, px: { xs: 2, md: 4 }, py: 4, bgcolor: colors.white, borderRadius: 4, boxShadow: `0 4px 20px ${colors.black}10` }}>
+              <Typography variant="h4" component="h2" sx={{ fontWeight: 700, color: colors.primaryRed, mb: 3 }}>
+                New Arrivals – Sri Padmavathi Crackers
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                Discover the latest Sivakasi crackers at <strong style={{ color: colors.primaryRed }}>Sri Padmavathi Crackers</strong>. Our new arrivals feature a wide collection of festival crackers, Diwali crackers, gift boxes, flower pots, rockets, sparklers, ground chakkars, bombs, fancy fireworks, and kids crackers at affordable prices.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                All our crackers are sourced from trusted Sivakasi cracker manufacturers, ensuring excellent quality, safety, and vibrant performance. Whether you are celebrating Diwali, weddings, temple festivals, birthdays, or special occasions, our latest collection offers exciting fireworks for every celebration.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, mb: 2, lineHeight: 1.8 }}>
+                Enjoy online cracker shopping with attractive offers, secure ordering, and fast delivery across India where service is available. Browse our new cracker collection regularly to explore the latest products, festive combo packs, and special discounts.
+              </Typography>
+              <Typography variant="body1" sx={{ color: colors.darkGray, lineHeight: 1.8 }}>
+                Choose <strong style={{ color: colors.primaryRed }}>Sri Padmavathi Crackers</strong> for best quality Sivakasi crackers, discount crackers online, and a memorable festive celebration with your family and friends.
+              </Typography>
             </Box>
           </motion.div>
         </Container>

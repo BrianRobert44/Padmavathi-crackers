@@ -1924,9 +1924,9 @@ export default function QuickOrderPage() {
         fullWidth
         PaperProps={{
           sx: {
-            bgcolor: "rgba(0,0,0,0.9)",
-            boxShadow: "none",
-            overflow: "visible",
+            bgcolor: colors.white,
+            boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+            overflow: "hidden",
             position: "relative",
             maxWidth: "90vw",
             maxHeight: "90vh",
@@ -1939,37 +1939,82 @@ export default function QuickOrderPage() {
           onClick={() => setPreviewImage(null)}
           sx={{
             position: "absolute",
-            right: -12,
-            top: -12,
-            bgcolor: colors.primaryRed,
-            color: colors.white,
-            "&:hover": { bgcolor: colors.darkRed },
+            right: 8,
+            top: 8,
+            bgcolor: "rgba(0,0,0,0.1)",
+            color: colors.darkGray,
+            "&:hover": { bgcolor: colors.primaryRed, color: colors.white },
             zIndex: 10,
-            boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent sx={{ p: 0, display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden" }}>
+        
+        <DialogContent 
+          sx={{ 
+            p: 0, 
+            position: "relative", 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            overflow: "hidden",
+            backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 450 150' width='450' height='150'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgba(0,0,0,0.06)' font-family='Arial, sans-serif' font-size='20' font-weight='bold' transform='rotate(-20 225 75)'>WWW.SRIPADMAVATHICRACKERS.COM</text></svg>")`,
+            backgroundRepeat: "repeat",
+          }}
+        >
           {previewImage && (
-            <Box
-              component="img"
-              src={previewImage.image}
-              alt={previewImage.name}
-              sx={{
-                maxWidth: "100%",
-                maxHeight: "85vh",
-                objectFit: "contain",
-                p: 1,
-              }}
-            />
+            <Box sx={{ position: "relative", display: "flex", justifyContent: "center", width: "100%" }}>
+              <Box
+                component="img"
+                src={previewImage.image}
+                alt={previewImage.name}
+                sx={{
+                  width: "100%",
+                  maxHeight: "90vh",
+                  objectFit: "contain",
+                  display: "block"
+                }}
+              />
+              
+              {/* Central Bold Watermark Overlay */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 2,
+                  pointerEvents: "none",
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: colors.primaryRed,
+                    fontSize: { xs: "1rem", sm: "1.5rem", md: "2.2rem" },
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    textShadow: `
+                      -1.5px -1.5px 0 #fff,  
+                       1.5px -1.5px 0 #fff,
+                      -1.5px  1.5px 0 #fff,
+                       1.5px  1.5px 0 #fff,
+                       0px  4px 10px rgba(0,0,0,0.5)
+                    `,
+                    userSelect: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  WWW.SRIPADMAVATHICRACKERS.COM
+                </Typography>
+              </Box>
+            </Box>
           )}
         </DialogContent>
-        {previewImage && (
-          <Box sx={{ p: 2, textAlign: "center", color: colors.white, bgcolor: "rgba(0,0,0,0.5)" }}>
-            <Typography variant="h6">{previewImage.name.replace(/<br>/g, " ")}</Typography>
-          </Box>
-        )}
       </Dialog>
 
     </Box>

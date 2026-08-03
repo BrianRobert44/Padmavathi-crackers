@@ -204,7 +204,7 @@ export default function Footer() {
                 />
               </IconButton>
               <IconButton
-                href="https://instagram.com"
+                href="https://instagram.com/padmavathicrackers"
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
