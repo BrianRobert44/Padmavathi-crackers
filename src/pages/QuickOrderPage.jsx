@@ -100,7 +100,11 @@ const CategoryHeader = React.memo(({ category, discount }) => (
 ));
 
 const MobileProductRow = React.memo(({ product, qty, onQtyChange, onPreview, index }) => {
-  const amount = qty * product.price;
+  // Calculate live price from netRate + discount; fallback to stored price
+  const effectivePrice = (product.netRate && product.discount)
+    ? Math.round(product.netRate * (1 - Number(product.discount) / 100))
+    : (product.price || 0);
+  const amount = qty * effectivePrice;
 
   return (
     <TableRow
@@ -150,13 +154,13 @@ const MobileProductRow = React.memo(({ product, qty, onQtyChange, onPreview, ind
       {/* 3. Price */}
       <TableCell align="center" sx={{ width: "20%" }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {product.netRate && product.netRate > product.price && (
+          {product.netRate && product.netRate > effectivePrice && (
             <Typography sx={{ textDecoration: "line-through", color: colors.primaryRed, fontSize: "0.7rem", lineHeight: 1 }}>
               ₹{product.netRate}
             </Typography>
           )}
           <Typography sx={{ color: colors.deepGreen, fontWeight: "900", fontSize: "0.9rem" }}>
-            ₹{product.price}
+            ₹{effectivePrice}
           </Typography>
         </Box>
       </TableCell>
@@ -191,7 +195,11 @@ const MobileProductRow = React.memo(({ product, qty, onQtyChange, onPreview, ind
     </TableRow>
   );
 });const ProductRow = React.memo(({ product, index, qty, onQtyChange, onPreview }) => {
-  const amount = qty * product.price;
+  // Calculate live price from netRate + discount; fallback to stored price
+  const effectivePrice = (product.netRate && product.discount)
+    ? Math.round(product.netRate * (1 - Number(product.discount) / 100))
+    : (product.price || 0);
+  const amount = qty * effectivePrice;
 
   return (
     <TableRow
@@ -265,7 +273,7 @@ const MobileProductRow = React.memo(({ product, qty, onQtyChange, onPreview, ind
 
       <TableCell align="right" sx={{ p: 1.5, border: `1px solid ${colors.gray70}` }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          {product.netRate && product.netRate > product.price && (
+          {product.netRate && product.netRate > effectivePrice && (
             <Typography
               variant="caption"
               sx={{
@@ -283,7 +291,7 @@ const MobileProductRow = React.memo(({ product, qty, onQtyChange, onPreview, ind
             fontWeight="900"
             fontSize="1.15rem"
           >
-            ₹{product.price}
+            ₹{effectivePrice}
           </Typography>
         </Box>
       </TableCell>
@@ -617,10 +625,14 @@ export default function QuickOrderPage() {
       cat.products.forEach((p) => {
         const qty = quantities[p.id] || 0;
         if (qty > 0) {
+          const effectivePrice = (p.netRate && p.discount)
+            ? Math.round(p.netRate * (1 - Number(p.discount) / 100))
+            : (p.price || 0);
           items.push({
             ...p,
+            price: effectivePrice, // store the correct price
             quantity: qty,
-            amount: qty * p.price,
+            amount: qty * effectivePrice,
           });
         }
       });
