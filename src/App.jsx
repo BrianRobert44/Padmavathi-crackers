@@ -27,7 +27,7 @@ function ConditionalFooter() {
   const location = useLocation();
 
   // Hide footer on the root path (QuickOrderPage) and admin path
-  if (location.pathname === "/" || location.pathname === "/admin") {
+  if (location.pathname === "/" || location.pathname.toLowerCase().startsWith("/admin")) {
     return null;
   }
 
@@ -39,7 +39,7 @@ function ConditionalFloatingButtons() {
   const location = useLocation();
 
   // Only hide on admin path
-  if (location.pathname === "/admin") {
+  if (location.pathname.toLowerCase().startsWith("/admin")) {
     return null;
   }
 
@@ -51,7 +51,7 @@ function ConditionalHeader() {
   const location = useLocation();
 
   // Hide header on admin path
-  if (location.pathname === "/admin") {
+  if (location.pathname.toLowerCase().startsWith("/admin")) {
     return null;
   }
 

@@ -244,7 +244,7 @@ export default function Footer() {
                 />
               </IconButton>
               <IconButton
-                href="https://wa.me/919655121440"
+                href="https://wa.me/919952561300"
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{

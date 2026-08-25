@@ -130,7 +130,7 @@ const ShowProduct = () => {
   }, [searchTerm, selectedCategory]);
 
   const handleWhatsAppOrder = (productTitle) => {
-    const phoneNumber = "919655121440";
+    const phoneNumber = "919952561300";
     const message = encodeURIComponent(
       `Hi Sri Padmavathi Crackers, I'm interested in "${productTitle}". Could you provide more details and the latest price?`
     );

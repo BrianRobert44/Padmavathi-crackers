@@ -4,7 +4,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { colors } from "../colors";
 
 const FloatingWhatsApp = () => {
-  const whatsappNumber = "919655121440";
+  const whatsappNumber = "919952561300";
   const message = "Hi, I'm interested in your crackers. Can you help me?";
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

@@ -45,6 +45,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { colors } from "../colors";
 import bannerImage from "../assets/banner/quickOrder.jpg";
 import mainVideo from "../assets/logo/0303.mp4";
@@ -52,7 +53,7 @@ import BrandsLogo from "../components/BrandsLogo";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-import { collection, getDocs, query, orderBy, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, addDoc, getDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase/firebase";
 import localProductData from "../components/productData";
 
@@ -360,6 +361,8 @@ export default function QuickOrderPage() {
   const [cartOpen, setCartOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState("");
+  const [showThankYou, setShowThankYou] = useState(false);
 
   // Client information state
   const [clientInfo, setClientInfo] = useState({
@@ -405,6 +408,9 @@ export default function QuickOrderPage() {
             throw fallbackErr; // Bubble up to outer catch for local fallback
           }
         }
+        
+        // Filter out items that are marked as out of stock
+        items = items.filter(item => !item.outOfStock);
 
         if (items.length === 0) {
           console.warn("Firestore collection 'crackers' is empty. Using local data fallback.");
@@ -442,8 +448,19 @@ export default function QuickOrderPage() {
           return nameMap[cat] || cat;
         };
 
-        // Hardcoded sort order
-        const categoryOrder = {
+        let fetchedCategories = [];
+        try {
+          const docRef = doc(db, "settings", "categories");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists() && docSnap.data().list) {
+            fetchedCategories = docSnap.data().list;
+          }
+        } catch (err) {
+          console.error("Failed to fetch dynamic categories:", err);
+        }
+
+        // Hardcoded sort order fallback
+        const categoryOrderFallback = {
           "SOUND CRACKERS": 0, "FLOWER POTS": 1, "GROUND CHAKKAR'S": 2,
           "SPINNER CHAKKAR'S": 3, "PENCIL": 4, "TWINKLING STAR": 5,
           "BIJILI": 6,
@@ -453,14 +470,6 @@ export default function QuickOrderPage() {
           "KID'S SPECIAL": 15, "90'S KIDS SPECIAL": 16,
           "MEGA FOUNTAIN": 17, "COLOUR CRACKLING FOUNTAIN": 18,
           "SETOUT": 19, "COLOUR MATCHES": 20, "SPARKLERS": 21, "GIFT BOXES": 22,
-          // Old Firebase names fallback
-          "Single Shot Crackers": 0, "Continue Sound Crackers": 0,
-          "Flower Pots Embossed": 1, "Ground Chacker Embossed": 2,
-          "Pencil Novaties": 4, "Twinkling Star": 5,
-          "Rocket Bomb": 7, "Bomb of Bomb": 8, "Paper Bomb": 9,
-          "Night Aerial Attraction": 12, "Shots": 14,
-          "Night Fountain": 17, "Novelty Fancies": 17,
-          "Sparklers": 21, "M M Gift Box": 22,
         };
 
         // Group by DISPLAY category
@@ -484,14 +493,22 @@ export default function QuickOrderPage() {
             }) 
           }))
           .sort((a, b) => {
-            // Sort categories by the minimum orderIndex found in their products
             const minOrderA = Math.min(...a.products.map(p => p.orderIndex ?? 999999));
             const minOrderB = Math.min(...b.products.map(p => p.orderIndex ?? 999999));
             if (minOrderA !== minOrderB) return minOrderA - minOrderB;
             
-            const orderA = categoryOrder[a.category] ?? 9999;
-            const orderB = categoryOrder[b.category] ?? 9999;
-            return orderA - orderB;
+            if (fetchedCategories.length > 0) {
+              const dynOrderA = fetchedCategories.indexOf(a.category);
+              const dynOrderB = fetchedCategories.indexOf(b.category);
+              const sortA = dynOrderA !== -1 ? dynOrderA : 9999;
+              const sortB = dynOrderB !== -1 ? dynOrderB : 9999;
+              if (sortA !== sortB) return sortA - sortB;
+            } else {
+              const fallbackOrderA = categoryOrderFallback[a.category] ?? 9999;
+              const fallbackOrderB = categoryOrderFallback[b.category] ?? 9999;
+              if (fallbackOrderA !== fallbackOrderB) return fallbackOrderA - fallbackOrderB;
+            }
+            return a.category.localeCompare(b.category);
           });
 
         setProductData(formattedData);
@@ -631,11 +648,13 @@ export default function QuickOrderPage() {
     if (canSubmit) {
       setCartOpen(false);
       setOpenDialog(true);
+      setCurrentOrderId("SPC-" + Math.floor(100000 + Math.random() * 900000));
     }
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setCurrentOrderId("");
     setClientInfo({
       name: "",
       email: "",
@@ -660,6 +679,12 @@ export default function QuickOrderPage() {
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text("Order Invoice", 105, 25, { align: "center" });
+
+    if (currentOrderId) {
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Order ID: ${currentOrderId}`, 105, 32, { align: "center" });
+    }
 
     // Client Information Section
     doc.setFontSize(12);
@@ -725,7 +750,7 @@ export default function QuickOrderPage() {
     doc.text("Thank you for choosing Sri Padmavathi CRACKERS!", 105, finalY + 35, {
       align: "center",
     });
-    doc.text("For any queries, contact: +91 96551 21440", 105, finalY + 42, {
+    doc.text("For any queries, contact: +91 99525 61300", 105, finalY + 42, {
       align: "center",
     });
 
@@ -743,6 +768,7 @@ export default function QuickOrderPage() {
 
     // Create order object for Firestore
     const orderData = {
+      orderId: currentOrderId,
       clientInfo: {
         name: clientInfo.name,
         email: clientInfo.email,
@@ -773,7 +799,7 @@ export default function QuickOrderPage() {
       // We still proceed to WhatsApp even if Firestore fails, to not block the user
     }
 
-    let message = "*Sri Padmavathi CRACKERS - Order Invoice*\n\n";
+    let message = `*Sri Padmavathi CRACKERS - Order Invoice (#${currentOrderId})*\n\n`;
 
     // Client Details
     message += "*CLIENT DETAILS*\n";
@@ -800,10 +826,11 @@ export default function QuickOrderPage() {
     message += `*Minimum Order: ₹${minOrder}*\n\n`;
     message += "Thank you for choosing Sri Padmavathi CRACKERS!";
 
-    const waNumber = "919655121440";
+    const waNumber = "919952561300";
     const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
-    handleCloseDialog();
+    setOpenDialog(false);
+    setShowThankYou(true);
   };
 
   const clearFilters = () => {
@@ -2015,6 +2042,88 @@ export default function QuickOrderPage() {
             </Box>
           )}
         </DialogContent>
+      </Dialog>
+
+      {/* Thank You Dialog */}
+      <Dialog
+        open={showThankYou}
+        onClose={() => {
+          setShowThankYou(false);
+          setQuantities({});
+        }}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            p: 2,
+            textAlign: "center",
+          }
+        }}
+      >
+        <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, py: 3 }}>
+          <CheckCircleIcon sx={{ fontSize: "5rem", color: colors.successGreen || "#2e7d32" }} />
+          <Typography variant="h4" sx={{ fontWeight: 800, color: colors.darkRed }}>
+            Thank You!
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: colors.darkGray }}>
+            For purchasing with Sri Padmavathi Crackers
+          </Typography>
+          
+          <Box sx={{ bgcolor: "#f9f9f9", p: 2, borderRadius: 2, width: "100%", border: `1px solid ${colors.gray70}` }}>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Order ID:</strong> {currentOrderId}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Grand Total:</strong> ₹{grandTotal}
+            </Typography>
+          </Box>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Your order has been recorded. We have opened WhatsApp to confirm your order and share payment details. If it didn't open, please click the button below.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", gap: 2, pb: 3 }}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<WhatsAppIcon />}
+            onClick={() => {
+              const items = orderItems;
+              let message = `*Sri Padmavathi CRACKERS - Order Invoice (#${currentOrderId})*\n\n`;
+              message += "*CLIENT DETAILS*\n";
+              message += `Name: ${clientInfo.name}\n`;
+              message += `Phone: ${clientInfo.phone}\n`;
+              message += `Address: ${clientInfo.address}\n\n`;
+              message += "*ORDER DETAILS*\n";
+              message += `Date: ${new Date().toLocaleDateString()}\n`;
+              message += `Total Products: ${totalQty}\n`;
+              message += `Overall Total: ₹${overallTotal}\n\n`;
+              message += "*ITEMS*\n";
+              items.forEach((item) => {
+                message += `${item.name.replace(/<br>/g, " ")} - ${item.quantity} × ₹${item.price} = ₹${item.amount}\n`;
+              });
+              message += `\n*Grand Total: ₹${grandTotal}*\n`;
+              message += "Thank you for choosing Sri Padmavathi CRACKERS!";
+              
+              const url = `https://wa.me/919952561300?text=${encodeURIComponent(message)}`;
+              window.open(url, "_blank");
+            }}
+            sx={{ fontWeight: 700 }}
+          >
+            Open WhatsApp again
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setShowThankYou(false);
+              setQuantities({});
+            }}
+            sx={{ fontWeight: 700, borderColor: colors.primaryRed, color: colors.primaryRed }}
+          >
+            Close & Continue
+          </Button>
+        </DialogActions>
       </Dialog>
 
     </Box>

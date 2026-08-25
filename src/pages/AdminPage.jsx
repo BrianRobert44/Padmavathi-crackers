@@ -34,6 +34,16 @@ import {
   CardContent,
   Stack,
   Divider,
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  FormControlLabel,
+  Switch,
   Box as MuiBox
 } from "@mui/material";
 import {
@@ -43,14 +53,15 @@ import {
 import {
   collection,
   getDocs,
+  getDoc,
+  setDoc,
   addDoc,
   updateDoc,
   deleteDoc,
   doc,
   query,
   orderBy,
-  writeBatch,
-  setDoc
+  writeBatch
 } from "firebase/firestore";
 import {
   ref,
@@ -75,6 +86,13 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import CloseIcon from "@mui/icons-material/Close";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import MenuIcon from "@mui/icons-material/Menu";
+import PrintIcon from "@mui/icons-material/Print";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { colors } from "../colors";
 import productData from "../components/productData"; // For initialization
 
@@ -113,9 +131,22 @@ const AdminPage = () => {
 
   // Orders State
   const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState("inventory"); // "inventory" or "orders"
+  const [activeTab, setActiveTab] = useState("dashboard"); // "dashboard", "inventory", or "orders"
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [fetchingOrders, setFetchingOrders] = useState(false);
+  
+  // Order Edit State
+  const [editingOrderItems, setEditingOrderItems] = useState(false);
+  const [editableItems, setEditableItems] = useState([]);
+
+  // Category Management State
+  const [categories, setCategories] = useState([]);
+  const [managingCategories, setManagingCategories] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [draggedItemIdx, setDraggedItemIdx] = useState(null);
+  const [editingCategoryIdx, setEditingCategoryIdx] = useState(null);
+  const [editingCategoryName, setEditingCategoryName] = useState("");
+  const [hasUnsavedCategories, setHasUnsavedCategories] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -126,11 +157,16 @@ const AdminPage = () => {
     category: "",
     count: "",
     image: null,
-    imageUrl: ""
+    imageUrl: "",
+    outOfStock: false
   });
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imagePreview, setImagePreview] = useState(null);
+  
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  const drawerWidth = 260;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -151,12 +187,20 @@ const AdminPage = () => {
       setUser(user);
       setLoading(false);
       if (user) {
-        fetchProducts();
-        fetchOrders();
+        fetchCategories().then((cats) => {
+          fetchProducts(cats);
+          fetchOrders();
+        });
       }
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "categories" && categories.length === 0 && user) {
+      fetchCategories();
+    }
+  }, [activeTab, categories.length, user]);
 
   const getDisplayCategory = (item) => {
     const cat = item.category || 'Other';
@@ -208,7 +252,39 @@ const AdminPage = () => {
   };
 
 
-  const fetchProducts = async () => {
+  const fetchCategories = async () => {
+    try {
+      const docRef = doc(db, "settings", "categories");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data().list && docSnap.data().list.length > 0) {
+        setCategories(docSnap.data().list);
+        return docSnap.data().list;
+      } else {
+        const defaultCategories = Object.entries(CATEGORY_SORT_ORDER)
+          .sort((a, b) => a[1] - b[1])
+          .map(entry => entry[0]);
+        const uniqueDefaults = [...new Set(defaultCategories)];
+        setCategories(uniqueDefaults);
+        try {
+          await setDoc(docRef, { list: uniqueDefaults }, { merge: true });
+        } catch (setErr) {
+          console.error("Failed to save default categories to Firestore, continuing with local state", setErr);
+        }
+        return uniqueDefaults;
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      // Fallback to local defaults if Firestore fetch fails
+      const defaultCategories = Object.entries(CATEGORY_SORT_ORDER)
+        .sort((a, b) => a[1] - b[1])
+        .map(entry => entry[0]);
+      const uniqueDefaults = [...new Set(defaultCategories)];
+      setCategories(uniqueDefaults);
+      return uniqueDefaults;
+    }
+  };
+
+  const fetchProducts = async (catList = categories) => {
     try {
       // Try ordering by orderIndex in the query first
       const q = query(collection(db, "crackers"), orderBy("orderIndex"));
@@ -234,10 +310,12 @@ const AdminPage = () => {
           if (a.orderIndex !== b.orderIndex) return a.orderIndex - b.orderIndex;
         }
         
-        // Secondary sort: Category Order
-        const orderA = CATEGORY_SORT_ORDER[a.displayCategory] ?? 9999;
-        const orderB = CATEGORY_SORT_ORDER[b.displayCategory] ?? 9999;
-        if (orderA !== orderB) return orderA - orderB;
+        // Secondary sort: Dynamic Category Order
+        const orderA = catList.indexOf(a.displayCategory);
+        const orderB = catList.indexOf(b.displayCategory);
+        const sortA = orderA !== -1 ? orderA : 9999;
+        const sortB = orderB !== -1 ? orderB : 9999;
+        if (sortA !== sortB) return sortA - sortB;
 
         // Final sort: Name
         return (a.name || "").localeCompare(b.name || "");
@@ -282,6 +360,176 @@ const AdminPage = () => {
       console.error("Error updating order status:", err);
       showSnackbar("Failed to update order status", "error");
     }
+  };
+
+  const saveOrderItems = async () => {
+    if (!selectedOrder) return;
+    try {
+      const newGrandTotal = editableItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+
+      await updateDoc(doc(db, "orders", selectedOrder.id), { 
+        items: editableItems,
+        grandTotal: newGrandTotal, 
+        overallTotal: newGrandTotal 
+      });
+      showSnackbar("Order items and total updated successfully!");
+      
+      const updatedOrder = { ...selectedOrder, items: editableItems, grandTotal: newGrandTotal, overallTotal: newGrandTotal };
+      setSelectedOrder(updatedOrder);
+      setEditingOrderItems(false);
+      fetchOrders();
+    } catch (err) {
+      console.error("Error updating order items:", err);
+      showSnackbar("Failed to update order items", "error");
+    }
+  };
+
+  const handleItemQuantityChange = (idx, newQty) => {
+    if (newQty < 1) return; // Prevent negative or zero quantity
+    const updatedItems = [...editableItems];
+    const item = updatedItems[idx];
+    
+    // Calculate unit price before changing quantity
+    const unitPrice = Number(item.price) || (Number(item.amount) / item.quantity);
+    
+    item.quantity = newQty;
+    item.amount = newQty * unitPrice;
+    
+    setEditableItems(updatedItems);
+  };
+
+  const printInvoice = (order) => {
+    let rawSubtotal = 0;
+    let finalTotal = 0;
+
+    const itemsHtml = order.items?.map((item, idx) => {
+      // Use netRate if available, otherwise fallback to price
+      const netRate = Number(item.netRate) || Number(item.price) || (Number(item.amount) / Number(item.quantity));
+      const qty = Number(item.quantity) || 1;
+      const rawAmount = netRate * qty;
+      const discountedAmount = Number(item.amount) || (Number(item.price) * qty);
+      
+      rawSubtotal += rawAmount;
+      finalTotal += discountedAmount;
+
+      return `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${idx + 1}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${qty} x ₹${netRate}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">₹${rawAmount}</td>
+      </tr>
+      `;
+    }).join('') || '';
+
+    // Override with final totals if saved in order object
+    if (order.overallTotal) {
+      finalTotal = Number(order.overallTotal);
+    } else if (order.grandTotal) {
+      finalTotal = Number(order.grandTotal);
+    }
+
+    rawSubtotal = Math.round(rawSubtotal);
+    finalTotal = Math.round(finalTotal);
+    const discount = Math.round(rawSubtotal - finalTotal);
+
+    const discountHtml = discount > 0 ? `
+              <tr>
+                <th>Discount / Adjusted:</th>
+                <td style="color: #16a34a;">-₹${discount}</td>
+              </tr>
+    ` : '';
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Invoice - ${order.orderId || order.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 20px; }
+            .header { text-align: center; border-bottom: 2px solid #ea580c; padding-bottom: 10px; margin-bottom: 20px; }
+            .header h1 { margin: 0; color: #ea580c; font-size: 28px; }
+            .header p { margin: 5px 0 0 0; font-size: 14px; color: #666; }
+            .details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+            .details div { width: 48%; }
+            .details h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px; color: #ea580c; }
+            .details p { margin: 5px 0; font-size: 14px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            th { text-align: left; background-color: #f9f9f9; padding: 10px 8px; border-bottom: 2px solid #ccc; font-size: 14px; }
+            td { font-size: 14px; }
+            .totals { width: 40%; float: right; }
+            .totals table th { background: transparent; border: none; text-align: left; padding: 5px 0; }
+            .totals table td { text-align: right; border: none; padding: 5px 0; font-weight: bold; }
+            .totals .grand-total th, .totals .grand-total td { font-size: 18px; color: #ea580c; border-top: 2px solid #ea580c; padding-top: 10px; }
+            .footer { clear: both; text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #888; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Sri Padmavathi Crackers</h1>
+            <p>Sivakasi, Tamil Nadu | Phone: 99525 61300 | Web: www.sripadmavathicrackers.com</p>
+          </div>
+          
+          <div class="details">
+            <div>
+              <h3>Customer Details</h3>
+              <p><strong>Name:</strong> ${order.clientInfo?.name || "N/A"}</p>
+              <p><strong>Phone:</strong> ${order.clientInfo?.phone || "N/A"}</p>
+              <p><strong>Email:</strong> ${order.clientInfo?.email || "N/A"}</p>
+              <p><strong>Address:</strong> ${order.clientInfo?.address || "N/A"}</p>
+            </div>
+            <div>
+              <h3>Order Details</h3>
+              <p><strong>Order ID:</strong> ${order.orderId || order.id}</p>
+              <p><strong>Date:</strong> ${order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "N/A"}</p>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>SL.</th>
+                <th>Item Description</th>
+                <th style="text-align: right;">Qty</th>
+                <th style="text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+
+          <div class="totals">
+            <table>
+              <tr>
+                <th>Subtotal:</th>
+                <td>₹${rawSubtotal}</td>
+              </tr>
+              ${discountHtml}
+              <tr class="grand-total">
+                <th>Grand Total:</th>
+                <td>₹${finalTotal}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="footer">
+            <p>Thank you for your business! Have a safe and happy celebration.</p>
+          </div>
+          
+          <script>
+            window.onload = function() { window.print(); window.onafterprint = function(){ window.close(); } };
+          </script>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert("Popup blocked! Please allow popups for this website to print invoices.");
+      return;
+    }
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
   };
 
   const handleDeleteOrder = async (orderId) => {
@@ -426,7 +674,8 @@ const AdminPage = () => {
         category: product.category,
         count: product.count || "",
         imageUrl: product.image,
-        image: null
+        image: null,
+        outOfStock: product.outOfStock || false
       });
     } else {
       setEditingProduct(null);
@@ -438,7 +687,8 @@ const AdminPage = () => {
         category: "",
         count: "",
         imageUrl: "",
-        image: null
+        image: null,
+        outOfStock: false
       });
     }
     setImagePreview(null);
@@ -518,6 +768,7 @@ const AdminPage = () => {
         category: formData.category,
         count: formData.count || "",
         image: imageUrl || "",
+        outOfStock: formData.outOfStock || false,
         updatedAt: new Date()
       };
 
@@ -756,137 +1007,389 @@ const AdminPage = () => {
     return <AdminLogin onLogin={() => setLoading(false)} />;
   }
 
-  return (
-    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, px: { xs: 1, sm: 2 } }}>
-      {/* Responsive Header */}
-      <Box sx={{ 
-        display: "flex", 
-        flexDirection: { xs: "column", md: "row" },
-        justifyContent: "space-between", 
-        alignItems: { xs: "flex-start", md: "center" }, 
-        mb: 3, 
-        gap: 2 
-      }}>
-        <Box>
-          <Typography variant={isMobile ? "h5" : "h4"} sx={{ fontWeight: "bold", color: colors.primaryRed }}>
-            Admin Dashboard
-          </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Manage your crackers inventory, pricing and customer orders
-          </Typography>
-          <Button 
-            variant="contained" 
-            color="secondary" 
-            onClick={updatePricesFromPDF}
-            sx={{ ml: 2 }}
-            size="small"
+  const drawer = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Toolbar sx={{ bgcolor: colors.primaryRed, color: colors.white }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          Admin Panel
+        </Typography>
+      </Toolbar>
+      <Divider />
+      <List sx={{ flexGrow: 1 }}>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={activeTab === "dashboard"}
+            onClick={() => { setActiveTab("dashboard"); setMobileOpen(false); }}
+            sx={{
+              "&.Mui-selected": { bgcolor: "rgba(221, 18, 18, 0.08)" },
+              "&:hover": { bgcolor: "rgba(221, 18, 18, 0.04)" }
+            }}
           >
-            Update Prices from PDF
-          </Button>
-        </Box>
+            <ListItemIcon>
+              <DashboardIcon sx={{ color: activeTab === "dashboard" ? colors.primaryRed : "inherit" }} />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" sx={{ color: activeTab === "dashboard" ? colors.primaryRed : "inherit", fontWeight: activeTab === "dashboard" ? 'bold' : 'normal' }} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={activeTab === "categories"}
+            onClick={() => { setActiveTab("categories"); setMobileOpen(false); }}
+            sx={{
+              "&.Mui-selected": { bgcolor: "rgba(221, 18, 18, 0.08)" },
+              "&:hover": { bgcolor: "rgba(221, 18, 18, 0.04)" }
+            }}
+          >
+            <ListItemIcon>
+              <FormatListNumberedIcon sx={{ color: activeTab === "categories" ? colors.primaryRed : "inherit" }} />
+            </ListItemIcon>
+            <ListItemText primary="Categories" sx={{ color: activeTab === "categories" ? colors.primaryRed : "inherit", fontWeight: activeTab === "categories" ? 'bold' : 'normal' }} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={activeTab === "inventory"}
+            onClick={() => { setActiveTab("inventory"); setMobileOpen(false); }}
+            sx={{
+              "&.Mui-selected": { bgcolor: "rgba(221, 18, 18, 0.08)" },
+              "&:hover": { bgcolor: "rgba(221, 18, 18, 0.04)" }
+            }}
+          >
+            <ListItemIcon>
+              <InventoryIcon sx={{ color: activeTab === "inventory" ? colors.primaryRed : "inherit" }} />
+            </ListItemIcon>
+            <ListItemText primary="Products" sx={{ color: activeTab === "inventory" ? colors.primaryRed : "inherit", fontWeight: activeTab === "inventory" ? 'bold' : 'normal' }} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={activeTab === "orders"}
+            onClick={() => { setActiveTab("orders"); setMobileOpen(false); }}
+            sx={{
+              "&.Mui-selected": { bgcolor: "rgba(221, 18, 18, 0.08)" },
+              "&:hover": { bgcolor: "rgba(221, 18, 18, 0.04)" }
+            }}
+          >
+            <ListItemIcon>
+              <ShoppingBagIcon sx={{ color: activeTab === "orders" ? colors.primaryRed : "inherit" }} />
+            </ListItemIcon>
+            <ListItemText primary="Orders" sx={{ color: activeTab === "orders" ? colors.primaryRed : "inherit", fontWeight: activeTab === "orders" ? 'bold' : 'normal' }} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleLogout}>
+            <ListItemIcon>
+              <LogoutIcon color="error" />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ color: colors.primaryRed }} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
+  );
 
-        {/* Tab Switching Buttons */}
-        <Stack direction="row" spacing={1} sx={{ mt: { xs: 2, md: 0 } }}>
-          <Button
-            variant={activeTab === "inventory" ? "contained" : "outlined"}
-            startIcon={<InventoryIcon />}
-            onClick={() => setActiveTab("inventory")}
-            sx={{
-              bgcolor: activeTab === "inventory" ? colors.primaryRed : "transparent",
-              color: activeTab === "inventory" ? colors.white : colors.primaryRed,
-              borderColor: colors.primaryRed,
-              "&:hover": {
-                bgcolor: activeTab === "inventory" ? colors.darkRed : "rgba(221, 18, 18, 0.04)",
-                borderColor: colors.darkRed,
-              }
-            }}
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
+          bgcolor: colors.white,
+          color: colors.darkGray,
+          boxShadow: 1,
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { md: 'none' } }}
           >
-            Inventory
-          </Button>
-          <Button
-            variant={activeTab === "orders" ? "contained" : "outlined"}
-            startIcon={<ShoppingBagIcon />}
-            onClick={() => setActiveTab("orders")}
-            sx={{
-              bgcolor: activeTab === "orders" ? colors.primaryRed : "transparent",
-              color: activeTab === "orders" ? colors.white : colors.primaryRed,
-              borderColor: colors.primaryRed,
-              "&:hover": {
-                bgcolor: activeTab === "orders" ? colors.darkRed : "rgba(221, 18, 18, 0.04)",
-                borderColor: colors.darkRed,
-              }
-            }}
-          >
-            Orders
-          </Button>
-        </Stack>
-        
-        <Grid container spacing={1} sx={{ width: { xs: "100%", md: "auto" } }} justifyContent="flex-end">
-          <Grid item xs={6} sm="auto">
-            <Button
-              fullWidth={isMobile}
-              variant="outlined"
-              color="error"
-              size={isMobile ? "small" : "medium"}
-              startIcon={<DeleteSweepIcon />}
-              onClick={clearDatabase}
-            >
-              Clear All
-            </Button>
-          </Grid>
-          <Grid item xs={6} sm="auto">
-            <Button
-              fullWidth={isMobile}
-              variant="outlined"
-              color="info"
-              size={isMobile ? "small" : "medium"}
-              startIcon={<DeleteSweepIcon />}
-              onClick={deduplicateDatabase}
-            >
-              {isMobile ? "Clean" : "Deduplicate"}
-            </Button>
-          </Grid>
-          <Grid item xs={4} sm="auto">
-            <Button
-              fullWidth={isMobile}
-              variant="outlined"
-              color="warning"
-              size={isMobile ? "small" : "medium"}
-              startIcon={<RefreshIcon />}
-              onClick={initializeDatabase}
-            >
-              Sync
-            </Button>
-          </Grid>
-          <Grid item xs={4} sm="auto">
-            <Button
-              fullWidth={isMobile}
-              variant="contained"
-              size={isMobile ? "small" : "medium"}
-              startIcon={<AddIcon />}
-              onClick={() => handleOpenDialog()}
-              sx={{ bgcolor: colors.primaryRed, "&:hover": { bgcolor: colors.darkRed } }}
-            >
-              Add
-            </Button>
-          </Grid>
-          <Grid item xs={4} sm="auto">
-            <Button
-              fullWidth={isMobile}
-              variant="outlined"
-              color="inherit"
-              size={isMobile ? "small" : "medium"}
-              startIcon={<LogoutIcon />}
-              onClick={handleLogout}
-            >
-              Out
-            </Button>
-          </Grid>
-        </Grid>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+            {activeTab === "inventory" ? "Products Management" : "Orders Management"}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        aria-label="admin folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: 'block', md: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, borderRight: `1px solid ${colors.gray70}` },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
       </Box>
 
-      {activeTab === "inventory" ? (
-        <>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: { xs: 2, sm: 3 }, width: { md: `calc(100% - ${drawerWidth}px)` }, mt: 8, overflowX: "hidden" }}
+      >
+        {activeTab === "dashboard" ? (
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 4 }}>
+              Dashboard Overview
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid ${colors.primaryRed}`, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>Total Orders</Typography>
+                    <Typography variant="h4" fontWeight="bold">{orders.length}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #f59e0b`, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>Pending Orders</Typography>
+                    <Typography variant="h4" fontWeight="bold">{orders.filter(o => o.status === 'pending').length}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #10b981`, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>Completed Orders</Typography>
+                    <Typography variant="h4" fontWeight="bold">{orders.filter(o => o.status === 'completed').length}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #3b82f6`, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>Total Products</Typography>
+                    <Typography variant="h4" fontWeight="bold">{products.length}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+        ) : activeTab === "categories" ? (
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Manage Categories
+              </Typography>
+              <Button 
+                variant="contained" 
+                color="success" 
+                disabled={!hasUnsavedCategories}
+                onClick={async () => {
+                  await setDoc(doc(db, "settings", "categories"), { list: categories });
+                  setHasUnsavedCategories(false);
+                  showSnackbar("Category order saved successfully!");
+                }}
+              >
+                Save Changes
+              </Button>
+            </Box>
+            
+            <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
+              <TextField 
+                fullWidth 
+                size="small" 
+                label="New Category Name" 
+                value={newCategoryName} 
+                onChange={(e) => setNewCategoryName(e.target.value)} 
+              />
+              <Button variant="contained" color="primary" onClick={async () => {
+                if (!newCategoryName.trim()) return;
+                const upperName = newCategoryName.trim().toUpperCase();
+                if (categories.includes(upperName)) {
+                  showSnackbar("Category already exists", "error");
+                  return;
+                }
+                const newCats = [...categories, upperName];
+                setCategories(newCats);
+                setNewCategoryName("");
+                setHasUnsavedCategories(true);
+                showSnackbar("Category added. Don't forget to save!");
+              }}>Add Category</Button>
+            </Box>
+            
+            <List>
+              {categories.map((cat, idx) => (
+                <ListItem 
+                  key={cat} 
+                  draggable
+                  onDragStart={(e) => {
+                    setDraggedItemIdx(idx);
+                    e.dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (draggedItemIdx === null || draggedItemIdx === idx) return;
+                    const newCats = [...categories];
+                    const item = newCats.splice(draggedItemIdx, 1)[0];
+                    newCats.splice(idx, 0, item);
+                    setCategories(newCats);
+                    setDraggedItemIdx(null);
+                    setHasUnsavedCategories(true);
+                  }}
+                  sx={{ 
+                    border: '1px solid #ddd', 
+                    mb: 1, 
+                    borderRadius: 1, 
+                    bgcolor: '#fff',
+                    cursor: 'grab',
+                    '&:active': { cursor: 'grabbing' },
+                    opacity: draggedItemIdx === idx ? 0.5 : 1
+                  }}
+                >
+                  <DragIndicatorIcon sx={{ color: '#aaa', mr: 2 }} />
+                  {editingCategoryIdx === idx ? (
+                    <TextField
+                      size="small"
+                      autoFocus
+                      value={editingCategoryName}
+                      onChange={(e) => setEditingCategoryName(e.target.value)}
+                      onKeyDown={async (e) => {
+                        if (e.key === "Enter") {
+                          const newName = editingCategoryName.trim().toUpperCase();
+                          if (!newName || newName === cat) {
+                            setEditingCategoryIdx(null);
+                            return;
+                          }
+                          if (categories.includes(newName)) {
+                            showSnackbar("Category already exists", "error");
+                            return;
+                          }
+                          
+                          setEditingCategoryIdx(null);
+                          
+                          // Update array
+                          const newCats = [...categories];
+                          newCats[idx] = newName;
+                          setCategories(newCats);
+                          // We always save immediately on a rename because it affects products
+                          await setDoc(doc(db, "settings", "categories"), { list: newCats });
+
+                          // Batch update products
+                          const q = query(collection(db, "crackers"));
+                          const snapshot = await getDocs(q);
+                          const batch = writeBatch(db);
+                          let updatedCount = 0;
+                          snapshot.docs.forEach((docSnap) => {
+                            const data = docSnap.data();
+                            if (data.category === cat || getDisplayCategory(data) === cat) {
+                              batch.update(docSnap.ref, { category: newName });
+                              updatedCount++;
+                            }
+                          });
+                          if (updatedCount > 0) {
+                            await batch.commit();
+                            fetchProducts(newCats);
+                            showSnackbar(`Renamed category and updated ${updatedCount} products!`);
+                          } else {
+                            showSnackbar("Category renamed!");
+                          }
+                        }
+                        if (e.key === "Escape") {
+                          setEditingCategoryIdx(null);
+                        }
+                      }}
+                      onBlur={() => setEditingCategoryIdx(null)}
+                      sx={{ flexGrow: 1, mr: 2 }}
+                    />
+                  ) : (
+                    <ListItemText primary={<Typography fontWeight="bold">{idx + 1}. {cat}</Typography>} />
+                  )}
+                  <Stack direction="row">
+                    <IconButton 
+                      size="small"
+                      color="primary"
+                      onClick={() => {
+                        setEditingCategoryIdx(idx);
+                        setEditingCategoryName(cat);
+                      }}
+                    ><EditIcon /></IconButton>
+                    <IconButton 
+                      size="small"
+                      color="error"
+                      onClick={() => {
+                        if (!window.confirm(`Delete category "${cat}"? Products in this category will not be deleted, but may show under "Other".`)) return;
+                        const newCats = categories.filter((_, i) => i !== idx);
+                        setCategories(newCats);
+                        setHasUnsavedCategories(true);
+                      }}
+                    ><DeleteIcon /></IconButton>
+                    <IconButton 
+                      disabled={idx === 0} 
+                      onClick={() => {
+                        const newCats = [...categories];
+                        [newCats[idx - 1], newCats[idx]] = [newCats[idx], newCats[idx - 1]];
+                        setCategories(newCats);
+                        setHasUnsavedCategories(true);
+                      }}
+                    ><ArrowUpwardIcon /></IconButton>
+                    <IconButton 
+                      disabled={idx === categories.length - 1} 
+                      onClick={() => {
+                        const newCats = [...categories];
+                        [newCats[idx + 1], newCats[idx]] = [newCats[idx], newCats[idx + 1]];
+                        setCategories(newCats);
+                        setHasUnsavedCategories(true);
+                      }}
+                    ><ArrowDownwardIcon /></IconButton>
+                  </Stack>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        ) : activeTab === "inventory" ? (
+          <>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+              <Button variant="contained" color="secondary" onClick={updatePricesFromPDF} size="small">
+                Update Prices from PDF
+              </Button>
+              <Button variant="outlined" color="error" size="small" startIcon={<DeleteSweepIcon />} onClick={clearDatabase}>
+                Clear All
+              </Button>
+              <Button variant="outlined" color="info" size="small" startIcon={<DeleteSweepIcon />} onClick={deduplicateDatabase}>
+                {isMobile ? "Clean" : "Deduplicate"}
+              </Button>
+              <Button variant="outlined" color="warning" size="small" startIcon={<RefreshIcon />} onClick={initializeDatabase}>
+                Sync
+              </Button>
+              <Button variant="outlined" color="primary" size="small" startIcon={<FormatListNumberedIcon />} onClick={() => setActiveTab("categories")}>
+                Categories
+              </Button>
+              <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => handleOpenDialog()} sx={{ bgcolor: colors.primaryRed, "&:hover": { bgcolor: colors.darkRed }, ml: "auto" }}>
+                Add Product
+              </Button>
+            </Box>
           {/* Global Discount Panel */}
           <Paper
             elevation={2}
@@ -1136,89 +1639,138 @@ const AdminPage = () => {
           ) : (
             <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 3 }}>
               <Table>
-                <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+                <TableHead sx={{ bgcolor: '#ffffff', borderBottom: '2px solid #444' }}>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Customer</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Items</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Total</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', borderRight: '1px solid #ccc', py: 2 }}>SL.</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', borderRight: '1px solid #ccc' }}>Customer Details</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', borderRight: '1px solid #ccc' }}>Product Details</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', borderRight: '1px solid #ccc' }}>Paid Amount</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', borderRight: '1px solid #ccc' }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', textAlign: 'center' }}>Action</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', color: '#334155', textAlign: 'center' }}>Select</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id} hover>
-                      <TableCell sx={{ fontSize: '0.85rem' }}>
-                        {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "N/A"}
+                  {orders.map((order, index) => {
+                    const orderNo = orders.length - index; 
+                    const orderId = order.orderId || order.id?.slice(-6).toUpperCase() || "N/A";
+                    const orderDate = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "N/A";
+                    const customerName = order.clientInfo?.name || "N/A";
+                    const customerEmail = order.clientInfo?.email || "N/A";
+                    const customerPhone = order.clientInfo?.phone || "N/A";
+                    const customerAddress = order.clientInfo?.address || "N/A";
+                    const paidAmount = order.overallTotal || order.grandTotal || 0;
+                    
+                    const handlePrint = () => {
+                      printInvoice(order);
+                    };
+
+                    const handleSendMessage = () => {
+                       const phone = (customerPhone || "").replace(/\D/g, "");
+                       const message = encodeURIComponent(`Hi ${customerName}, this is regarding your order on Sri Padmavathi Crackers.`);
+                       window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+                    };
+                    
+                    return (
+                    <TableRow key={order.id} sx={{ bgcolor: '#e6edd8', '&:nth-of-type(odd)': { bgcolor: '#e6edd8' } }}>
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', color: '#1e293b' }}>
+                        {index + 1}
                       </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{order.clientInfo?.name}</Typography>
-                        <Typography variant="caption" display="block">{order.clientInfo?.phone}</Typography>
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', minWidth: 260, color: '#1e293b' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Order No: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderNo}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Order Id: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderId}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Date: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderDate}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Name: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerName}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Email: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerEmail}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Phone: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerPhone}</Box></Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Address:</Typography>
+                        <Typography variant="body2" sx={{ fontSize: '0.8rem', mb: 1 }}>{customerAddress}</Typography>
+                        <Button 
+                          variant="contained" 
+                          fullWidth
+                          size="small" 
+                          sx={{ bgcolor: '#f97316', '&:hover': { bgcolor: '#ea580c' }, textTransform: 'none', fontWeight: 'bold', borderRadius: 1 }}
+                          onClick={handleSendMessage}
+                        >
+                          Send Message
+                        </Button>
                       </TableCell>
-                      <TableCell>
-                        <Typography variant="body2">{order.totalQty} items</Typography>
-                        <Tooltip title={order.items?.map(i => `${i.name} (${i.quantity})`).join(', ') || ""}>
-                          <IconButton size="small">
-                            <VisibilityIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', textAlign: 'center' }}>
+                        <Button 
+                          variant="contained" 
+                          size="small" 
+                          sx={{ bgcolor: '#f97316', '&:hover': { bgcolor: '#ea580c' }, textTransform: 'none', fontWeight: 'bold', borderRadius: 1, minWidth: 60, lineHeight: 1.2, py: 1 }}
+                          onClick={() => setSelectedOrder(order)}
+                        >
+                          Full<br/>View
+                        </Button>
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: colors.primaryRed }}>
-                        ₹{order.overallTotal || order.grandTotal}
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', color: '#1e293b' }}>
+                        ₹{paidAmount}
                       </TableCell>
-                      <TableCell>
-                        <StatusChip status={order.status} />
-                      </TableCell>
-                      <TableCell>
-                        <Stack direction="row" spacing={1}>
-                          <Tooltip title="Pending">
-                            <IconButton 
-                              size="small" 
-                              onClick={() => updateOrderStatus(order.id, "pending")}
-                              sx={{ bgcolor: order.status === "pending" ? '#fff3e0' : 'transparent' }}
-                            >
-                              <HourglassEmptyIcon fontSize="small" color={order.status === "pending" ? "warning" : "inherit"} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Dispatched">
-                            <IconButton 
-                              size="small" 
-                              onClick={() => updateOrderStatus(order.id, "dispatched")}
-                              sx={{ bgcolor: order.status === "dispatched" ? '#e3f2fd' : 'transparent' }}
-                            >
-                              <LocalShippingIcon fontSize="small" color={order.status === "dispatched" ? "primary" : "inherit"} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Completed">
-                            <IconButton 
-                              size="small" 
-                              onClick={() => updateOrderStatus(order.id, "completed")}
-                              sx={{ bgcolor: order.status === "completed" ? '#e8f5e9' : 'transparent' }}
-                            >
-                              <CheckCircleIcon fontSize="small" color={order.status === "completed" ? "success" : "inherit"} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="View Details">
-                            <IconButton size="small" onClick={() => setSelectedOrder(order)}>
-                              <VisibilityIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete Order">
-                            <IconButton size="small" color="error" onClick={() => handleDeleteOrder(order.id)}>
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top' }}>
+                        <Typography sx={{ color: order.status === 'completed' ? '#22c55e' : '#ef4444', fontWeight: 'bold', fontSize: '0.9rem', mb: 1 }}>
+                          {order.status === 'completed' ? 'Completed' : 'Pending'}
+                        </Typography>
+                        <Stack spacing={1}>
+                        {order.status !== 'completed' ? (
+                          <Button 
+                            variant="contained" 
+                            size="small" 
+                            sx={{ bgcolor: '#22c55e', '&:hover': { bgcolor: '#16a34a' }, textTransform: 'none', fontSize: '0.75rem', fontWeight: 'bold', borderRadius: 1, px: 1, py: 0.2 }}
+                            onClick={() => updateOrderStatus(order.id, 'completed')}
+                          >
+                            Mark Paid
+                          </Button>
+                        ) : (
+                          <Button 
+                            variant="contained" 
+                            size="small" 
+                            sx={{ bgcolor: '#f97316', '&:hover': { bgcolor: '#ea580c' }, textTransform: 'none', fontSize: '0.75rem', fontWeight: 'bold', borderRadius: 1, px: 1, py: 0.2 }}
+                            onClick={() => updateOrderStatus(order.id, 'pending')}
+                          >
+                            Mark Unpaid
+                          </Button>
+                        )}
                         </Stack>
                       </TableCell>
+
+                      <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', textAlign: 'center' }}>
+                        <Stack spacing={1} alignItems="center">
+                          <Button 
+                            variant="contained" 
+                            size="small" 
+                            sx={{ bgcolor: '#3b82f6', '&:hover': { bgcolor: '#2563eb' }, textTransform: 'none', fontWeight: 'bold', borderRadius: 1, minWidth: 80 }}
+                            startIcon={<PrintIcon fontSize="small" />}
+                            onClick={handlePrint}
+                          >
+                            Print
+                          </Button>
+                          <Button 
+                            variant="contained" 
+                            color="error" 
+                            size="small" 
+                            sx={{ textTransform: 'none', fontWeight: 'bold', borderRadius: 1, minWidth: 80, bgcolor: '#ef4444', '&:hover': { bgcolor: '#dc2626' } }}
+                            startIcon={<DeleteIcon fontSize="small" />}
+                            onClick={() => handleDeleteOrder(order.id)}
+                          >
+                            Delete
+                          </Button>
+                        </Stack>
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid #ccc', verticalAlign: 'top', textAlign: 'center' }}>
+                        <input type="checkbox" style={{ transform: 'scale(1.3)', cursor: 'pointer', accentColor: '#22c55e' }} />
+                      </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
           )}
         </Box>
       )}
+      </Box>
 
       {/* Add/Edit Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
@@ -1285,7 +1837,7 @@ const AdminPage = () => {
                     label="Category"
                     onChange={handleInputChange}
                   >
-                    {[...new Set(productData.map(c => c.category))].map(cat => (
+                    {categories.map(cat => (
                       <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                     ))}
                     <MenuItem value="Other">Other</MenuItem>
@@ -1299,6 +1851,19 @@ const AdminPage = () => {
                   name="count"
                   value={formData.count}
                   onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.outOfStock}
+                      onChange={(e) => setFormData(prev => ({ ...prev, outOfStock: e.target.checked }))}
+                      color="error"
+                    />
+                  }
+                  label="Out of Stock (Hide from customers)"
+                  sx={{ mt: 2 }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -1376,6 +1941,7 @@ const AdminPage = () => {
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom color="primary">Customer Information</Typography>
                 <Paper variant="outlined" sx={{ p: 2, bgcolor: '#fcfcfc' }}>
+                  <Typography variant="body1"><strong>Order ID:</strong> {selectedOrder.orderId || selectedOrder.id}</Typography>
                   <Typography variant="body1"><strong>Name:</strong> {selectedOrder.clientInfo?.name}</Typography>
                   <Typography variant="body1"><strong>Phone:</strong> {selectedOrder.clientInfo?.phone}</Typography>
                   <Typography variant="body1"><strong>Email:</strong> {selectedOrder.clientInfo?.email}</Typography>
@@ -1398,14 +1964,6 @@ const AdminPage = () => {
                       Pending
                     </Button>
                     <Button 
-                      variant={selectedOrder.status === "dispatched" ? "contained" : "outlined"} 
-                      color="primary"
-                      onClick={() => updateOrderStatus(selectedOrder.id, "dispatched")}
-                      size="small"
-                    >
-                      Dispatched
-                    </Button>
-                    <Button 
                       variant={selectedOrder.status === "completed" ? "contained" : "outlined"} 
                       color="success"
                       onClick={() => updateOrderStatus(selectedOrder.id, "completed")}
@@ -1418,28 +1976,81 @@ const AdminPage = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom color="primary">Order Items</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="h6" color="primary">Order Items</Typography>
+                  {!editingOrderItems ? (
+                    <Button 
+                      variant="outlined" 
+                      color="primary" 
+                      size="small" 
+                      onClick={() => {
+                        setEditableItems(JSON.parse(JSON.stringify(selectedOrder.items || [])));
+                        setEditingOrderItems(true);
+                      }}
+                    >
+                      Edit Order Items
+                    </Button>
+                  ) : (
+                    <Stack direction="row" spacing={1}>
+                      <Button variant="contained" color="success" size="small" onClick={saveOrderItems}>
+                        Save Changes
+                      </Button>
+                      <Button variant="text" color="error" size="small" onClick={() => setEditingOrderItems(false)}>
+                        Cancel
+                      </Button>
+                    </Stack>
+                  )}
+                </Box>
                 <TableContainer component={Paper} variant="outlined">
                   <Table size="small">
                     <TableHead sx={{ bgcolor: '#eee' }}>
                       <TableRow>
                         <TableCell>Item</TableCell>
-                        <TableCell align="right">Qty</TableCell>
+                        <TableCell align="center">Qty</TableCell>
                         <TableCell align="right">Amount</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedOrder.items?.map((item, idx) => (
+                      {(editingOrderItems ? editableItems : selectedOrder.items)?.map((item, idx) => (
                         <TableRow key={idx}>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell align="right">{item.quantity}</TableCell>
+                          <TableCell align="center">
+                            {editingOrderItems ? (
+                              <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                <IconButton 
+                                  size="small" 
+                                  color="error" 
+                                  onClick={() => handleItemQuantityChange(idx, item.quantity - 1)}
+                                  disabled={item.quantity <= 1}
+                                  sx={{ p: 0.5 }}
+                                >
+                                  <Box component="span" sx={{ fontSize: '1.2rem', lineHeight: 1 }}>-</Box>
+                                </IconButton>
+                                <Typography sx={{ minWidth: 20, textAlign: 'center', fontWeight: 'bold' }}>
+                                  {item.quantity}
+                                </Typography>
+                                <IconButton 
+                                  size="small" 
+                                  color="success" 
+                                  onClick={() => handleItemQuantityChange(idx, item.quantity + 1)}
+                                  sx={{ p: 0.5 }}
+                                >
+                                  <Box component="span" sx={{ fontSize: '1.2rem', lineHeight: 1 }}>+</Box>
+                                </IconButton>
+                              </Stack>
+                            ) : (
+                              item.quantity
+                            )}
+                          </TableCell>
                           <TableCell align="right">₹{item.amount}</TableCell>
                         </TableRow>
                       ))}
                       <TableRow sx={{ bgcolor: '#fffde7' }}>
                         <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Grand Total</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 'bold', color: colors.primaryRed }}>
-                          ₹{selectedOrder.grandTotal}
+                        <TableCell align="right" sx={{ fontWeight: 'bold', color: colors.primaryRed, fontSize: '1.1rem' }}>
+                          ₹{editingOrderItems 
+                              ? editableItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0)
+                              : selectedOrder.grandTotal}
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -1467,6 +2078,8 @@ const AdminPage = () => {
         </DialogActions>
       </Dialog>
 
+
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
@@ -1476,7 +2089,7 @@ const AdminPage = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
   );
 };
 

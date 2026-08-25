@@ -296,7 +296,7 @@ export default function Header() {
           <YouTubeIcon />
         </IconButton>
         <IconButton
-          href="https://wa.me/919655121440"
+          href="https://wa.me/919952561300"
           sx={{ color: "#25D366", bgcolor: colors.lightBlueGray, p: 1.5 }}
         >
           <WhatsAppIcon />

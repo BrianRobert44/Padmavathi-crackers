@@ -888,7 +888,7 @@ const NewArrivalsPage = () => {
                 {[
                   { icon: <FacebookIcon />, color: "#1877F2", link: "https://facebook.com" },
                   { icon: <InstagramIcon />, color: "#E4405F", link: "https://instagram.com/padmavathicrackers" },
-                  { icon: <WhatsAppIcon />, color: "#25D366", link: "https://wa.me/919655121440" }
+                  { icon: <WhatsAppIcon />, color: "#25D366", link: "https://wa.me/919952561300" }
                 ].map((social, idx) => (
                   <Box
                     key={idx}
