@@ -1158,7 +1158,7 @@ const AdminPage = () => {
               Dashboard Overview
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid ${colors.primaryRed}`, boxShadow: 3 }}>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>Total Orders</Typography>
@@ -1166,7 +1166,7 @@ const AdminPage = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #f59e0b`, boxShadow: 3 }}>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>Pending Orders</Typography>
@@ -1174,7 +1174,7 @@ const AdminPage = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #10b981`, boxShadow: 3 }}>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>Completed Orders</Typography>
@@ -1182,7 +1182,27 @@ const AdminPage = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={6}>
+                <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #8b5cf6`, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>Total Revenue (All Orders)</Typography>
+                    <Typography variant="h4" fontWeight="bold">
+                      ₹{orders.reduce((sum, order) => {
+                        let orderTotal = 0;
+                        if (order.overallTotal) {
+                          orderTotal = Number(order.overallTotal);
+                        } else if (order.grandTotal) {
+                          orderTotal = Number(order.grandTotal);
+                        } else {
+                          orderTotal = order.items?.reduce((s, item) => s + (Number(item.amount) || 0), 0) || 0;
+                        }
+                        return sum + orderTotal;
+                      }, 0).toLocaleString('en-IN')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={6}>
                 <Card sx={{ bgcolor: '#fff', borderLeft: `6px solid #3b82f6`, boxShadow: 3 }}>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>Total Products</Typography>
@@ -1621,12 +1641,47 @@ const AdminPage = () => {
         <Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Recent Orders ({orders.length})
+              Recent Orders
             </Typography>
             <Button startIcon={<RefreshIcon />} onClick={fetchOrders} disabled={fetchingOrders}>
               Refresh
             </Button>
           </Box>
+          
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={4}>
+              <Paper sx={{ p: 2, borderLeft: '5px solid #3b82f6', borderRadius: 2, bgcolor: '#f8fafc', boxShadow: 1 }}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold">Total Orders</Typography>
+                <Typography variant="h5" fontWeight="bold">{orders.length}</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Paper sx={{ p: 2, borderLeft: '5px solid #f59e0b', borderRadius: 2, bgcolor: '#fffbeb', boxShadow: 1 }}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold">Total Billed Amount</Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  ₹{orders.reduce((sum, o) => {
+                    let orderTotal = 0;
+                    if (o.overallTotal) {
+                      orderTotal = Number(o.overallTotal);
+                    } else if (o.grandTotal) {
+                      orderTotal = Number(o.grandTotal);
+                    } else {
+                      orderTotal = o.items?.reduce((s, item) => s + (Number(item.amount) || 0), 0) || 0;
+                    }
+                    return sum + orderTotal;
+                  }, 0).toLocaleString('en-IN')}
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Paper sx={{ p: 2, borderLeft: '5px solid #22c55e', borderRadius: 2, bgcolor: '#f0fdf4', boxShadow: 1 }}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold">Total Amount Received</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{ color: '#15803d' }}>
+                  ₹{orders.reduce((sum, o) => sum + (Number(o.amountReceived) || 0), 0).toLocaleString('en-IN')}
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
           
           {fetchingOrders ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 10 }}>
@@ -1685,15 +1740,37 @@ const AdminPage = () => {
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Phone: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerPhone}</Box></Typography>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Address:</Typography>
                         <Typography variant="body2" sx={{ fontSize: '0.8rem', mb: 1 }}>{customerAddress}</Typography>
-                        <Button 
-                          variant="contained" 
-                          fullWidth
+                        <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                          <Button 
+                            variant="contained" 
+                            fullWidth
+                            size="small" 
+                            sx={{ bgcolor: '#f97316', '&:hover': { bgcolor: '#ea580c' }, textTransform: 'none', fontWeight: 'bold', borderRadius: 1 }}
+                            onClick={handleSendMessage}
+                          >
+                            WhatsApp
+                          </Button>
+                        </Box>
+                        <TextField 
                           size="small" 
-                          sx={{ bgcolor: '#f97316', '&:hover': { bgcolor: '#ea580c' }, textTransform: 'none', fontWeight: 'bold', borderRadius: 1 }}
-                          onClick={handleSendMessage}
-                        >
-                          Send Message
-                        </Button>
+                          fullWidth 
+                          label="Amount Received (₹)"
+                          type="number"
+                          defaultValue={order.amountReceived || ""}
+                          onBlur={async (e) => {
+                            const val = e.target.value;
+                            if (val !== String(order.amountReceived || "")) {
+                              try {
+                                await updateDoc(doc(db, "orders", order.id), { amountReceived: Number(val) });
+                                setOrders(prev => prev.map(o => o.id === order.id ? {...o, amountReceived: Number(val)} : o));
+                              } catch (err) {
+                                console.error(err);
+                                alert("Failed to save received amount");
+                              }
+                            }
+                          }}
+                          sx={{ mt: 1, bgcolor: '#fff' }}
+                        />
                       </TableCell>
                       <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', textAlign: 'center' }}>
                         <Button 

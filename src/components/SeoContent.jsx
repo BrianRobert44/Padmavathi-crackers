@@ -27,13 +27,13 @@ const SeoContent = () => {
               textAlign: "center",
             }}
           >
-            Premium Sivakasi Crackers – Safe & Quality Fireworks
+            Sri Padmavathi Crackers | Sivakasi Crackers & Fireworks
           </Typography>
           
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>
-            <strong>Premium Crackers Online</strong>
+            <strong>Buy Sivakasi Crackers Online</strong>
             <br />
-            Welcome to Sri Padmavathi Crackers, your trusted destination for premium Sivakasi crackers at affordable prices. We offer a wide range of high-quality fireworks, including sparklers, flower pots, rockets, chakras, fancy crackers, sound crackers, kids&#39; crackers, and gift boxes. Our products are sourced directly from trusted Sivakasi manufacturers to ensure safety, quality, and reliable performance.
+            Welcome to Sri Padmavathi Crackers, the best online crackers shop in Sivakasi offering premium fireworks at wholesale prices. Whether you are looking to buy Diwali crackers online or order standard fireworks for a special occasion, we have you covered. Explore our extensive Sivakasi crackers price list 2026, featuring a wide range of high-quality sparklers, flower pots, rockets, ground chakkar, fancy crackers, loud sound crackers, safe kids&#39; fireworks, and exclusive festival gift boxes. As trusted Sivakasi crackers dealers, we ensure 100% safety, superior quality, and reliable doorstep delivery across India.
           </Typography>
 
           <Typography variant="body1" sx={{ color: colors.gray50, mb: 2, lineHeight: 1.8, fontSize: "1.1rem" }}>

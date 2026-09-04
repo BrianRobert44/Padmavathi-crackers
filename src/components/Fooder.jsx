@@ -21,7 +21,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { colors } from "../colors";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo/logo.jpeg";
+import logo from "../assets/logo/logo.png";
 
 export default function Footer() {
   const theme = useTheme();

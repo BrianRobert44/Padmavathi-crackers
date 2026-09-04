@@ -947,7 +947,7 @@ export default function QuickOrderPage() {
             fontSize: { xs: "1.5rem", sm: "1.8rem" },
           }}
         >
-          Sri Padmavathi CRACKERS is the best Crackers Shop in Sivakasi.
+          Sivakasi Crackers Price List 2026 | Sri Padmavathi Crackers
         </Typography>
         <Typography
           align="center"
