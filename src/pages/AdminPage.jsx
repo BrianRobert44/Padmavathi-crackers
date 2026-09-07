@@ -94,7 +94,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { colors } from "../colors";
-import productData from "../components/productData"; // For initialization
+import productData from "../components/productData";
 
 const StatusChip = ({ status }) => {
   const statusConfig = {
@@ -646,6 +646,50 @@ const AdminPage = () => {
     } catch (e) {
       console.error(e);
       showSnackbar("Error updating prices: " + e.message, "error");
+    }
+  };
+
+  const syncProductDataToDB = async () => {
+    if (!window.confirm("Sync new products and prices from productData.js to database? This will update all existing products matching the IDs.")) return;
+    try {
+      const batch = writeBatch(db);
+      let count = 0;
+      let orderIndex = 0;
+      
+      for (const category of productData) {
+        for (const product of category.products) {
+          if (!product.id) continue;
+          
+          let discount = 80;
+          if (category.category === "GIFT BOXES" || product.name.includes("Items") || category.category === "SETOUT") {
+            discount = 0;
+          } else {
+            if (product.netRate && product.price) {
+                discount = Math.round((1 - (product.price / product.netRate)) * 100);
+            }
+          }
+
+          const docRef = doc(db, "crackers", String(product.id));
+          batch.set(docRef, {
+            name: product.name,
+            category: category.category,
+            netRate: product.netRate || 0,
+            price: product.price || 0,
+            discount: discount,
+            image: product.image,
+            count: product.count,
+            orderIndex: orderIndex++
+          }, { merge: true });
+          count++;
+        }
+      }
+
+      await batch.commit();
+      showSnackbar(`Synced ${count} products successfully!`);
+      fetchProducts();
+    } catch (e) {
+      console.error(e);
+      showSnackbar("Error syncing products: " + e.message, "error");
     }
   };
 
@@ -1391,6 +1435,9 @@ const AdminPage = () => {
         ) : activeTab === "inventory" ? (
           <>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+              <Button variant="contained" color="success" onClick={syncProductDataToDB} size="small">
+                Sync ProductData to DB
+              </Button>
               <Button variant="contained" color="secondary" onClick={updatePricesFromPDF} size="small">
                 Update Prices from PDF
               </Button>
