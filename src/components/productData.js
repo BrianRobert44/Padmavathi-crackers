@@ -54,10 +54,6 @@ const productData = [
       p(280, "Minions Mega Crackling Candle (3pcs)", 850, 170, img("placeholder.jpg"), "1 box (3 pcs)"),  // NEW
       p(281, "Goodly Mega Crackling Candle (3pcs)", 850, 170, img("placeholder.jpg"), "1 box (3 pcs)"),  // NEW
       p(282, "Pop&Hot Mega Crackling Candle (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // NEW
-      p(204, "Fire Light (3pcs)", 780, 156, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(205, "Water Light (3pcs)", 780, 156, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(206, "Hi Light (3pcs)", 780, 156, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(207, "Magic Light (3pcs)", 780, 156, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -81,7 +77,6 @@ const productData = [
       p(84, "Lunik Rocket", 600, 120, img("lunicrocket.jpg"), "1 box (5 pcs)"),
       p(283, "2 Sound Rocket", 650, 130, img("placeholder.jpg"), "1 box (10 pcs)"),  // NEW
       p(86, "Whizzling Rocket", 950, 190, img("whistlilngrocket.jpg"), "1 box (10 pcs)"),
-      p(83, "Rocket Bomb", 260, 52, img("rocketbomb.jpg"), "1 box (10 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -141,9 +136,6 @@ const productData = [
       p(154, "4\" Fancy (2pcs)", 4200, 840, img("4fancy.jpg"), "1 box (2 pcs)"),
       p(159, "5\" Fancy (2pcs)", 5600, 1120, img("5inchfancy.jpg"), "1 box (2 pcs)"),
       p(225, "6\" Turbo Fancy", 3800, 760, img("placeholder.jpg"), "1 box (2 pcs)"),
-      p(222, "3 1/2\" Sizzling Fancy", 1650, 330, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(223, "3 1/2\" Crackling Fancy", 1650, 330, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(156, "3 1/2\" Double Ball Fancy", 2100, 420, img("3½doubleball.jpg"), "1 box (2 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -199,7 +191,6 @@ const productData = [
       p(103, "Bada Peacock", 2250, 450, img("badapeacock.jpg"), "1 box (2 pcs)"),
       p(296, "Mini Siren (5pcs)", 950, 190, img("placeholder.jpg"), "1 box (5 pcs)"),  // NEW
       p(297, "Cylinder (2pcs)", 1500, 300, img("placeholder.jpg"), "1 box (2 pcs)"),  // NEW
-      p(127, "Tim Tom", 350, 70, img("timtom.jpg"), "1 box (2 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -241,11 +232,6 @@ const productData = [
       p(314, "Popcorn Fountain", 750, 150, img("placeholder.jpg"), "1 box (1 pcs)"),  // NEW
       p(259, "Hello Kitty Bus", 1400, 280, img("placeholder.jpg"), "1 box (1 pcs)"),
       p(260, "Paris Tower", 600, 120, img("placeholder.jpg"), "1 box (1 pcs)"),
-      p(241, "Easter (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(242, "Santa Claus (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(243, "Snow Balls (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(244, "X-Mas (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(245, "Ice Balls (3pcs)", 800, 160, img("placeholder.jpg"), "1 box (3 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -270,14 +256,6 @@ const productData = [
       p(257, "Mr. Bean (3 step Fountain)", 1125, 225, img("placeholder.jpg"), "1 box (1 pcs)"),
       p(258, "Sizzling Logo (3 step Fountain)", 1125, 225, img("placeholder.jpg"), "1 box (1 pcs)"),
       p(269, "Jumbo Crackling Fountain (3pcs)", 1600, 320, img("placeholder.jpg"), "1 box (3 pcs)"),
-      p(261, "Twins Tone (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(262, "Gold Feast (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(263, "Trolls (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(264, "King Fish (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(265, "Angel Time (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(266, "Croods (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(267, "Gold Fish (2 step fountain)", 900, 180, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
-      p(268, "Violet Matrix (Fountain with 2 step)", 1800, 360, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -304,7 +282,6 @@ const productData = [
     products: [
       p(328, "Mega Laptop 5 in 1", 750, 150, img("placeholder.jpg"), "1 box (1 pcs)"),  // NEW
       p(273, "Mega Laptop 10 in 1", 1300, 260, img("placeholder.jpg"), "1 box (1 pcs)"),
-      p(272, "Special Deluxe", 310, 62, img("placeholder.jpg"), "1 box (1 pcs)"),  // LEGACY: not in 2026 pricelist, verify if still sold
     ],
   },
   {
@@ -340,13 +317,6 @@ const productData = [
       p(178, "50 Items", 9500, 1900, img("50items.jpg"), "1 box (50 Items)"),
       p(330, "55 Items", null, null, img("placeholder.jpg"), "1 box (55 Items)"),  // NEW
       p(331, "60 Items", null, null, img("placeholder.jpg"), "1 box (60 Items)"),  // NEW
-    ],
-  },
-  {
-    category: "SETOUT",  // LEGACY CATEGORY: not present in 2026 pricelist, verify if still sold
-    products: [
-      p(270, "2\" 36 Shot", 18200, 3640, img("placeholder.jpg"), "1 box (1 pcs)"),
-      p(271, "2 1/2\" Bharath Rathana 20 Shot", 12700, 2540, img("placeholder.jpg"), "1 box (1 pcs)"),
     ],
   },
 ];

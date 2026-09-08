@@ -1755,8 +1755,7 @@ const AdminPage = () => {
                 <TableBody>
                   {orders.map((order, index) => {
                     const orderNo = orders.length - index; 
-                    const orderId = order.orderId || order.id?.slice(-6).toUpperCase() || "N/A";
-                    const orderDate = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "N/A";
+                    const orderDate = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN') : "N/A";
                     const customerName = order.clientInfo?.name || "N/A";
                     const customerEmail = order.clientInfo?.email || "N/A";
                     const customerPhone = order.clientInfo?.phone || "N/A";
@@ -1780,7 +1779,6 @@ const AdminPage = () => {
                       </TableCell>
                       <TableCell sx={{ borderRight: '1px solid #ccc', borderBottom: '1px solid #ccc', verticalAlign: 'top', minWidth: 260, color: '#1e293b' }}>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Order No: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderNo}</Box></Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Order Id: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderId}</Box></Typography>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Date: <Box component="span" sx={{ fontWeight: 'normal' }}>{orderDate}</Box></Typography>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Name: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerName}</Box></Typography>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', mb: 0.5 }}>Email: <Box component="span" sx={{ fontWeight: 'normal' }}>{customerEmail}</Box></Typography>
