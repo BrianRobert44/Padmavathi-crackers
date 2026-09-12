@@ -650,9 +650,19 @@ const AdminPage = () => {
   };
 
   const syncProductDataToDB = async () => {
-    if (!window.confirm("Sync new products and prices from productData.js to database? This will update all existing products matching the IDs.")) return;
+    if (!window.confirm("Sync new products and prices from productData.js to database? This will clear all existing products and recreate them.")) return;
     try {
-      const batch = writeBatch(db);
+      // 1. Delete all existing products first
+      const q = query(collection(db, "crackers"));
+      const snapshot = await getDocs(q);
+      const deleteBatch = writeBatch(db);
+      snapshot.docs.forEach((d) => {
+        deleteBatch.delete(d.ref);
+      });
+      await deleteBatch.commit();
+      
+      // 2. Insert new products
+      const insertBatch = writeBatch(db);
       let count = 0;
       let orderIndex = 0;
       
@@ -670,7 +680,7 @@ const AdminPage = () => {
           }
 
           const docRef = doc(db, "crackers", String(product.id));
-          batch.set(docRef, {
+          insertBatch.set(docRef, {
             name: product.name,
             category: category.category,
             netRate: product.netRate || 0,
@@ -684,8 +694,8 @@ const AdminPage = () => {
         }
       }
 
-      await batch.commit();
-      showSnackbar(`Synced ${count} products successfully!`);
+      await insertBatch.commit();
+      showSnackbar(`Successfully cleared old data and synced ${count} products!`);
       fetchProducts();
     } catch (e) {
       console.error(e);

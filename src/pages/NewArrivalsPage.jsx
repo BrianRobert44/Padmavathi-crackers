@@ -144,13 +144,13 @@ const NewArrivalsPage = () => {
         "@id": "https://www.sripadmavathicrackers.com/#organization",
         "name": "Sri Padmavathi Crackers",
         "url": "https://www.sripadmavathicrackers.com",
-        "logo": "https://www.sripadmavathicrackers.com/logo.jpeg"
+        "logo": "https://www.sripadmavathicrackers.com/logo.png"
       },
       {
         "@type": "LocalBusiness",
         "@id": "https://www.sripadmavathicrackers.com/#localbusiness",
         "name": "Sri Padmavathi Crackers",
-        "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
+        "image": "https://www.sripadmavathicrackers.com/logo.png",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "14/496/8, Anuppankulam",

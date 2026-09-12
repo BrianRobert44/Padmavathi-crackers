@@ -1,3 +1,5 @@
+import lakshmi3 from "../assets/products/3lakshmi.jpg";
+
 const p = (id, name, netRate, price, image, count) => ({ id, name, netRate, price, image, count });
 const img = (n) => `/products/${n}`;
 
@@ -5,7 +7,7 @@ const productData = [
   {
     category: "SOUND CRACKERS",
     products: [
-      p(33, "3 1/2\" Lakshmi Crackers", 75, 15, img("3lakshmi.jpg"), "1 pkt (5 pcs)"),
+      p(33, "3 1/2\" Lakshmi Crackers", 75, 15, lakshmi3, "1 pkt (5 pcs)"),
       p(34, "4\" Lakshmi Crackers", 110, 22, img("4lakshmi.jpg"), "1 pkt (5 pcs)"),
       p(37, "4\" Gold Lakshmi Crackers", 180, 36, img("4lakshmigold.jpg"), "1 pkt (5 pcs)"),
       p(38, "5\" Bahubali Crackers", 260, 52, img("5inchlakshmi.jpg"), "1 pkt (5 pcs)"),
