@@ -34,7 +34,7 @@ import { colors } from "../colors";
 import { NavLink, useNavigate } from "react-router-dom";
 import productData from "./productData";
 import DownloadPriceList from "../assets/Price-list-25.pdf";
-import logo from "../assets/logo/logo.png";
+import logo from "../assets/logo/logo.jpeg";
 
 const navItems = [
   { label: "HOME", href: "/home" },

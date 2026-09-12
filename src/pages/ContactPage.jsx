@@ -163,7 +163,7 @@ ${formData.message}
         "@id": "https://www.sripadmavathicrackers.com/#organization",
         "name": "Sri Padmavathi Crackers",
         "url": "https://www.sripadmavathicrackers.com",
-        "logo": "https://www.sripadmavathicrackers.com/logo.png",
+        "logo": "https://www.sripadmavathicrackers.com/logo.jpeg",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+91 99525 61300",
@@ -174,7 +174,7 @@ ${formData.message}
         "@type": "LocalBusiness",
         "@id": "https://www.sripadmavathicrackers.com/#localbusiness",
         "name": "Sri Padmavathi Crackers",
-        "image": "https://www.sripadmavathicrackers.com/logo.png",
+        "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
         "telephone": "+91 96551 21440",
         "address": {
           "@type": "PostalAddress",

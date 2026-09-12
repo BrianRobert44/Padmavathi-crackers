@@ -42,7 +42,7 @@ export default function FirstPage() {
               "@context": "https://schema.org",
               "@type": "FireStation",
               "name": "Sri Padmavathi Crackers",
-              "image": "https://www.sripadmavathicrackers.com/assets/logo.png",
+              "image": "https://www.sripadmavathicrackers.com/assets/logo.jpeg",
               "@id": "",
               "url": "https://www.sripadmavathicrackers.com/",
               "telephone": "",
