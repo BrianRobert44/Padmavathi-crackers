@@ -414,10 +414,10 @@ const AdminPage = () => {
 
       return `
       <tr>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${idx + 1}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${qty} x ₹${netRate}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">₹${rawAmount}</td>
+        <td style="padding: 4px 6px; border-bottom: 1px solid #ddd; font-size: 12px;">${idx + 1}</td>
+        <td style="padding: 4px 6px; border-bottom: 1px solid #ddd; font-size: 12px;">${item.name}</td>
+        <td style="padding: 4px 6px; border-bottom: 1px solid #ddd; text-align: right; font-size: 12px;">${qty} x ₹${netRate}</td>
+        <td style="padding: 4px 6px; border-bottom: 1px solid #ddd; text-align: right; font-size: 12px;">₹${rawAmount}</td>
       </tr>
       `;
     }).join('') || '';
@@ -435,8 +435,8 @@ const AdminPage = () => {
 
     const discountHtml = discount > 0 ? `
               <tr>
-                <th>Discount / Adjusted:</th>
-                <td style="color: #16a34a;">-₹${discount}</td>
+                <th style="font-size: 12px;">Discount / Adjusted:</th>
+                <td style="color: #16a34a; font-size: 12px;">-₹${discount}</td>
               </tr>
     ` : '';
 
@@ -445,22 +445,22 @@ const AdminPage = () => {
         <head>
           <title>Invoice - ${order.orderId || order.id}</title>
           <style>
-            body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 20px; }
-            .header { text-align: center; border-bottom: 2px solid #ea580c; padding-bottom: 10px; margin-bottom: 20px; }
-            .header h1 { margin: 0; color: #ea580c; font-size: 28px; }
-            .header p { margin: 5px 0 0 0; font-size: 14px; color: #666; }
-            .details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+            body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 10px; }
+            .header { text-align: center; border-bottom: 2px solid #ea580c; padding-bottom: 5px; margin-bottom: 10px; }
+            .header h1 { margin: 0; color: #ea580c; font-size: 22px; }
+            .header p { margin: 3px 0 0 0; font-size: 11px; color: #666; }
+            .details { display: flex; justify-content: space-between; margin-bottom: 15px; }
             .details div { width: 48%; }
-            .details h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px; color: #ea580c; }
-            .details p { margin: 5px 0; font-size: 14px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-            th { text-align: left; background-color: #f9f9f9; padding: 10px 8px; border-bottom: 2px solid #ccc; font-size: 14px; }
-            td { font-size: 14px; }
-            .totals { width: 40%; float: right; }
-            .totals table th { background: transparent; border: none; text-align: left; padding: 5px 0; }
-            .totals table td { text-align: right; border: none; padding: 5px 0; font-weight: bold; }
-            .totals .grand-total th, .totals .grand-total td { font-size: 18px; color: #ea580c; border-top: 2px solid #ea580c; padding-top: 10px; }
-            .footer { clear: both; text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #888; }
+            .details h3 { border-bottom: 1px solid #ccc; padding-bottom: 3px; margin-bottom: 5px; font-size: 14px; color: #ea580c; }
+            .details p { margin: 3px 0; font-size: 12px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+            th { text-align: left; background-color: #f9f9f9; padding: 6px; border-bottom: 2px solid #ccc; font-size: 12px; }
+            td { font-size: 12px; }
+            .totals { width: 45%; float: right; }
+            .totals table th { background: transparent; border: none; text-align: left; padding: 3px 0; font-size: 12px; }
+            .totals table td { text-align: right; border: none; padding: 3px 0; font-weight: bold; font-size: 12px; }
+            .totals .grand-total th, .totals .grand-total td { font-size: 14px; color: #ea580c; border-top: 2px solid #ea580c; padding-top: 5px; }
+            .footer { clear: both; text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 10px; color: #888; }
           </style>
         </head>
         <body>
