@@ -40,19 +40,39 @@ export default function FirstPage() {
           {`
             {
               "@context": "https://schema.org",
-              "@type": "FireStation",
+              "@type": "Store",
               "name": "Sri Padmavathi Crackers",
-              "image": "https://www.sripadmavathicrackers.com/assets/logo.jpeg",
-              "@id": "",
+              "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
+              "@id": "https://www.sripadmavathicrackers.com/#store",
               "url": "https://www.sripadmavathicrackers.com/",
-              "telephone": "",
+              "telephone": "+919952561300",
+              "priceRange": "₹₹",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "Sivakasi",
+                "streetAddress": "14/496/8, Anuppankulam",
                 "addressLocality": "Sivakasi",
-                "addressRegion": "TN",
-                "postalCode": "626123",
+                "addressRegion": "Tamil Nadu",
+                "postalCode": "626189",
                 "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 9.4533,
+                "longitude": 77.8024
+              },
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "opens": "09:00",
+                "closes": "21:00"
               }
             }
           `}

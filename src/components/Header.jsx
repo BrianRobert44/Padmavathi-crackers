@@ -43,6 +43,7 @@ const navItems = [
   { label: "NEW ARRIVALS", href: "/new-arrivals" },
   { label: "CONTACT", href: "/contact" },
   { label: "BLOGS", href: "/blogs" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 // Get unique categories from productData

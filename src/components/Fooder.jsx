@@ -42,6 +42,7 @@ export default function Footer() {
     { name: "NEW ARRIVALS", path: "/new-arrivals" },
     { name: "CONTACT", path: "/contact" },
     { name: "BLOGS", path: "/blogs" },
+    { name: "FAQ", path: "/faq" },
     { name: "Online Crackers Sivakasi", path: "/" },
     { name: "Sivakasi Crackers Online", path: "/" },
     { name: "Online Crackers Purchase", path: "/" },

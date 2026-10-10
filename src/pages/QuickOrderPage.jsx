@@ -34,6 +34,7 @@ import {
   alpha,
   Tooltip
 } from "@mui/material";
+import { Helmet } from "react-helmet-async";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
@@ -852,6 +853,11 @@ export default function QuickOrderPage() {
 
   return (
     <Box sx={{ width: "100%", bgcolor: colors.white, pb: { xs: 15, sm: 12 } }}>
+      <Helmet>
+        <title>Quick Order | Sri Padmavathi Crackers - Sivakasi Crackers Price List 2026</title>
+        <meta name="description" content="View the full Sivakasi crackers price list 2026 and place your order quickly online. Wholesale prices on all premium fireworks with fast delivery." />
+        <link rel="canonical" href="https://www.sripadmavathicrackers.com/home" />
+      </Helmet>
       {/* Banner */}
       <Box
         sx={{

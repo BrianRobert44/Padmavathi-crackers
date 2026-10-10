@@ -18,6 +18,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import AdminPage from "./pages/AdminPage";
+import FaqPage from "./pages/FaqPage";
 import ScrollToTop from "./components/ScrollToTop";
 import FloatingButtons from "./components/FloatingButtons";
 import { colors } from "./colors";
@@ -69,6 +70,7 @@ function App() {
         <Route path="/home" element={<QuickOrderPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/faq" element={<FaqPage />} />
         <Route path="/new-arrivals" element={<NewArrivalsPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-conditions" element={<TermsConditions />} />
