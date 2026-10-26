@@ -140,6 +140,7 @@ export default function Header() {
           </Box>
           <IconButton
             onClick={handleDrawerToggle}
+            aria-label="Close menu"
             sx={{ color: colors.white, p: 1 }}
           >
             <CloseIcon />
@@ -286,18 +287,27 @@ export default function Header() {
       >
         <IconButton
           href="https://instagram.com/padmavathicrackers"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Follow Sri Padmavathi Crackers on Instagram"
           sx={{ color: "#E1306C", bgcolor: colors.lightBlueGray, p: 1.5 }}
         >
           <InstagramIcon />
         </IconButton>
         <IconButton
           href="https://youtube.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Watch Sri Padmavathi Crackers on YouTube"
           sx={{ color: "#FF0000", bgcolor: colors.lightBlueGray, p: 1.5 }}
         >
           <YouTubeIcon />
         </IconButton>
         <IconButton
           href="https://wa.me/919952561300"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Contact Sri Padmavathi Crackers on WhatsApp"
           sx={{ color: "#25D366", bgcolor: colors.lightBlueGray, p: 1.5 }}
         >
           <WhatsAppIcon />
@@ -308,6 +318,7 @@ export default function Header() {
 
   return (
     <Box
+      component="header"
       sx={{
         width: "100%",
         position: "sticky",
@@ -449,6 +460,7 @@ export default function Header() {
                 </Box>
                 <IconButton
                   href="mailto:padmavathicrackers@gmail.com"
+                  aria-label="Send email to Sri Padmavathi Crackers"
                   sx={{ color: colors.white, p: 0 }}
                   size="small"
                 >
@@ -575,6 +587,8 @@ export default function Header() {
           {/* Desktop Navigation - Only show on desktop */}
           {isDesktop && (
             <Box
+              component="nav"
+              aria-label="Main Navigation"
               sx={{
                 display: "flex",
                 alignItems: "center",

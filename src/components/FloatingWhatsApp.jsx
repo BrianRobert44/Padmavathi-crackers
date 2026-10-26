@@ -16,6 +16,7 @@ const FloatingWhatsApp = () => {
     <Tooltip title="Chat with us" placement="right">
       <Fab
         onClick={handleClick}
+        aria-label="Chat with Sri Padmavathi Crackers on WhatsApp"
         sx={{
           position: "fixed",
           bottom: { xs: 80, sm: 25 }, 

@@ -455,6 +455,7 @@ export default function CustomerReviews() {
               <Zoom in={true}>
                 <IconButton
                   onClick={handlePrev}
+                  aria-label="Previous customer review"
                   sx={{
                     position: "absolute",
                     left: { sm: -20, md: -25 },
@@ -486,6 +487,7 @@ export default function CustomerReviews() {
               <Zoom in={true}>
                 <IconButton
                   onClick={handleNext}
+                  aria-label="Next customer review"
                   sx={{
                     position: "absolute",
                     right: { sm: -20, md: -25 },

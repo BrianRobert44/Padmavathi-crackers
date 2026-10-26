@@ -37,6 +37,10 @@ const ShopNowButton = () => {
     <Fade in={isVisible}>
       <Box
         onClick={handleShopNow}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShopNow(); }}
+        role="button"
+        aria-label="Shop Sivakasi Crackers Online"
+        tabIndex={0}
         sx={{
           position: "fixed",
           bottom: "90px",

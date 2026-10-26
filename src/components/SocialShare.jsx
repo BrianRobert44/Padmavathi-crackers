@@ -36,6 +36,7 @@ const SocialShare = () => {
       <Tooltip title="Share on WhatsApp">
         <IconButton 
           onClick={handleWhatsAppShare}
+          aria-label="Share Sri Padmavathi Crackers on WhatsApp"
           sx={{ 
             bgcolor: "#25D366", 
             color: "white", 
@@ -49,6 +50,7 @@ const SocialShare = () => {
       <Tooltip title="Share on Facebook">
         <IconButton 
           onClick={handleFacebookShare}
+          aria-label="Share Sri Padmavathi Crackers on Facebook"
           sx={{ 
             bgcolor: "#1877F2", 
             color: "white", 
@@ -62,6 +64,7 @@ const SocialShare = () => {
       <Tooltip title="Visit our Instagram">
         <IconButton 
           onClick={handleInstagram}
+          aria-label="Visit Sri Padmavathi Crackers on Instagram"
           sx={{ 
             background: "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)", 
             color: "white", 
@@ -75,6 +78,7 @@ const SocialShare = () => {
       <Tooltip title="Share on Twitter (X)">
         <IconButton 
           onClick={handleTwitterShare}
+          aria-label="Share Sri Padmavathi Crackers on Twitter"
           sx={{ 
             bgcolor: "#000000", 
             color: "white", 
@@ -88,6 +92,7 @@ const SocialShare = () => {
       <Tooltip title="Share on Pinterest">
         <IconButton 
           onClick={handlePinterestShare}
+          aria-label="Share Sri Padmavathi Crackers on Pinterest"
           sx={{ 
             bgcolor: "#E60023", 
             color: "white", 

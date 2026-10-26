@@ -188,6 +188,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Visit Sri Padmavathi Crackers on Facebook"
                 sx={{
                   bgcolor: "rgba(255,255,255,0.1)",
                   color: colors.white,
@@ -208,6 +209,7 @@ export default function Footer() {
                 href="https://instagram.com/padmavathicrackers"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Follow Sri Padmavathi Crackers on Instagram"
                 sx={{
                   bgcolor: "rgba(255,255,255,0.1)",
                   color: colors.white,
@@ -228,6 +230,7 @@ export default function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Watch Sri Padmavathi Crackers on YouTube"
                 sx={{
                   bgcolor: "rgba(255,255,255,0.1)",
                   color: colors.white,
@@ -248,6 +251,7 @@ export default function Footer() {
                 href="https://wa.me/919952561300"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Contact Sri Padmavathi Crackers on WhatsApp"
                 sx={{
                   bgcolor: "rgba(255,255,255,0.1)",
                   color: colors.white,

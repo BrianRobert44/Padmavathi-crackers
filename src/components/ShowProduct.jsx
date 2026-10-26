@@ -150,6 +150,7 @@ const ShowProduct = () => {
         <Typography
           id="our-products"
           variant="h4"
+          component="h2"
           sx={{
             textAlign: "center",
             fontWeight: 700,
@@ -291,6 +292,7 @@ const ShowProduct = () => {
                 >
                   <Typography
                     variant="h6"
+                    component="h3"
                     sx={{
                       fontWeight: 700,
                       color: colors.white,
@@ -353,7 +355,7 @@ const ShowProduct = () => {
           ))}
           {filteredProducts.length === 0 && (
             <Box sx={{ gridColumn: "1/-1", textAlign: "center", py: 5 }}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography variant="h6" component="p" color="text.secondary">
                 No products found matching "{searchTerm}"
               </Typography>
             </Box>

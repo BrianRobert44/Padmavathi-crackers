@@ -1,27 +1,29 @@
 // src/App.jsx
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
 } from "react-router-dom";
+import { Box } from "@mui/material";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Fooder";
 import FirstPage from "./pages/FirstPage";
-import AboutPage from "./pages/AboutPage";
-import QuickOrderPage from "./pages/QuickOrderPage";
-import NewArrivalsPage from "./pages/NewArrivalsPage";
-import ContactPage from "./pages/ContactPage";
-import BlogsPage from "./pages/BlogsPage";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsConditions from "./pages/TermsConditions";
-import ShippingPolicy from "./pages/ShippingPolicy";
-import AdminPage from "./pages/AdminPage";
-import FaqPage from "./pages/FaqPage";
-import ScrollToTop from "./components/ScrollToTop";
 import FloatingButtons from "./components/FloatingButtons";
-import { colors } from "./colors";
+
+// Lazy-load secondary routes to keep initial bundle ultra-light and fast
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const QuickOrderPage = lazy(() => import("./pages/QuickOrderPage"));
+const NewArrivalsPage = lazy(() => import("./pages/NewArrivalsPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const BlogsPage = lazy(() => import("./pages/BlogsPage"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsConditions = lazy(() => import("./pages/TermsConditions"));
+const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const FaqPage = lazy(() => import("./pages/FaqPage"));
 
 // Small component that decides whether to show Footer
 function ConditionalFooter() {
@@ -62,24 +64,34 @@ function ConditionalHeader() {
 function App() {
   return (
     <Router>
+      {/* Accessible Skip to Content Link */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
       <ConditionalHeader />
 
-      <Routes>
-        <Route path="/" element={<FirstPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/home" element={<QuickOrderPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/blogs" element={<BlogsPage />} />
-        <Route path="/faq" element={<FaqPage />} />
-        <Route path="/new-arrivals" element={<NewArrivalsPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-conditions" element={<TermsConditions />} />
-        <Route path="/shipping-policy" element={<ShippingPolicy />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+      {/* Semantic Main Landmark */}
+      <Box component="main" id="main-content" tabIndex={-1} sx={{ outline: "none", minHeight: "60vh" }}>
+        <Suspense fallback={<Box sx={{ minHeight: "50vh" }} />}>
+          <Routes>
+            <Route path="/" element={<FirstPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/home" element={<QuickOrderPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
+        </Suspense>
+      </Box>
 
       <ConditionalFooter />
-      {/* Conditional floating buttons - hidden on QuickOrderPage */}
+      {/* Conditional floating buttons */}
       <ConditionalFloatingButtons />
     </Router>
   );

@@ -33,20 +33,39 @@ export default function FirstPage() {
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
       <Helmet>
-        <title>Sri Padmavathi Crackers - Premium Quality Crackers in Sivakasi</title>
-        <meta name="description" content="Buy premium quality crackers online from Sri Padmavathi Crackers, Sivakasi. Get the best prices, safe delivery, and exciting festival offers on all fireworks." />
+        <title>Sri Padmavathi Crackers | Sivakasi Fireworks</title>
+        <meta name="description" content="Buy premium quality crackers online from Sri Padmavathi Crackers, Sivakasi. Get the best wholesale prices, 100% genuine fireworks, and safe doorstep delivery across India." />
         <link rel="canonical" href="https://www.sripadmavathicrackers.com/" />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="Sri Padmavathi Crackers | Sivakasi Fireworks" />
+        <meta property="og:description" content="Buy premium quality crackers online from Sri Padmavathi Crackers, Sivakasi. Wholesale prices, safe delivery, and exciting festive offers." />
+        <meta property="og:url" content="https://www.sripadmavathicrackers.com/" />
+        <meta property="og:image" content="https://www.sripadmavathicrackers.com/logo.jpeg" />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Sri Padmavathi Crackers | Sivakasi Fireworks" />
+        <meta name="twitter:description" content="Buy premium quality crackers online from Sri Padmavathi Crackers, Sivakasi. Wholesale prices, safe delivery, and exciting festive offers." />
+        <meta name="twitter:image" content="https://www.sripadmavathicrackers.com/logo.jpeg" />
+        
+        {/* Structured Data (Schema.org Store / LocalBusiness) */}
         <script type="application/ld+json">
           {`
             {
               "@context": "https://schema.org",
-              "@type": "Store",
+              "@type": ["Store", "LocalBusiness"],
               "name": "Sri Padmavathi Crackers",
+              "alternateName": "Sri Padmavathi Crackers Sivakasi",
+              "description": "Sri Padmavathi Crackers is a premier fireworks dealer and wholesaler in Sivakasi offering premium quality crackers, diwali combos, and doorstep delivery across India.",
               "image": "https://www.sripadmavathicrackers.com/logo.jpeg",
               "@id": "https://www.sripadmavathicrackers.com/#store",
               "url": "https://www.sripadmavathicrackers.com/",
               "telephone": "+919952561300",
               "priceRange": "₹₹",
+              "currenciesAccepted": "INR",
+              "paymentAccepted": "Cash, UPI, Net Banking, Credit Card",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "14/496/8, Anuppankulam",
@@ -60,20 +79,29 @@ export default function FirstPage() {
                 "latitude": 9.4533,
                 "longitude": 77.8024
               },
-              "openingHoursSpecification": {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday"
-                ],
-                "opens": "09:00",
-                "closes": "21:00"
-              }
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                  ],
+                  "opens": "09:00",
+                  "closes": "21:00"
+                }
+              ],
+              "sameAs": [
+                "https://instagram.com/padmavathicrackers",
+                "https://facebook.com",
+                "https://youtube.com"
+              ],
+              "hasMap": "https://maps.google.com/?q=Sri+Padmavathi+Crackers+Sivakasi",
+              "areaServed": "IN"
             }
           `}
         </script>
